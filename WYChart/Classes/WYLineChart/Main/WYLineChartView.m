@@ -54,14 +54,14 @@
 #define DEFAULT_SHOW_JUNCTION_SHAPE true
 #define DEFAULT_JUNCTION_COLOR [UIColor whiteColor]
 #define DEFAULT_JUNCTION_POINT_STYLE kWYLineChartJunctionShapeSolidCircle
-#define DEFAULT_JUNCTION_POINT_SIZE kWYLineChartJunctionSmallShape
+#define DEFAULT_JUNCTION_POINT_SIZE kWYLineChartJunctionMiddleShape
 
 #define DEFAULT_TOUCH_POINT_COLOR [UIColor whiteColor]
 #define DEFAULT_TOUCH_POINT_STYLE kWYLineChartJunctionShapeSolidCircle
 #define DEFAULT_TOUCH_POINT_SIZE kWYLineChartJunctionSmallShape
 
-#define DEFAULT_ANIMATION_STYLE kWYLineChartAnimationDrawing
-#define DEFAULT_ANIMATION_DUIRATION 2.0
+#define DEFAULT_ANIMATION_STYLE kWYLineChartNoneAnimation
+#define DEFAULT_ANIMATION_DUIRATION 0.0
 
 #define DEFAULT_LINE_LEFT_MARGIN 10
 #define DEFAULT_LINE_RIGHT_MARGIN 10
@@ -208,16 +208,20 @@
         _contentScrollView.delegate = self;
         _contentScrollView.showsHorizontalScrollIndicator = false;
         _contentScrollView.showsVerticalScrollIndicator = false;
+        x = _calculator.yAxisViewWidth;
+        height = CGRectGetHeight(self.bounds);
+        y = 0;
+        width = _calculator.lineGraphWindowWidth;
+        frame = CGRectMake(x, y, width, height);
+        _contentScrollView.frame = frame;
+        //NSLog(@"_calculator : %f,  state : change", _calculator.drawableAreaWidth, CGRectGetHeight(_contentScrollView.bounds));
+
+        _contentScrollView.contentSize = CGSizeMake(_calculator.drawableAreaWidth, CGRectGetHeight(_contentScrollView.bounds));
+        
         [self addSubview:_contentScrollView];
     }
     
-    x = _calculator.yAxisViewWidth;
-    height = CGRectGetHeight(self.bounds);
-    y = 0;
-    width = _calculator.lineGraphWindowWidth;
-    frame = CGRectMake(x, y, width, height);
-    _contentScrollView.frame = frame;
-    _contentScrollView.contentSize = CGSizeMake(_calculator.drawableAreaWidth, CGRectGetHeight(_contentScrollView.bounds));
+  
     
     //* * * * * * * * * * * * * * * * * * * * *//
     //              reset Y axis               //
@@ -227,12 +231,11 @@
         _yAxisView.parentView = self;
         _yAxisView.backgroundColor = [UIColor clearColor];
         [self addSubview:_yAxisView];
+        height = CGRectGetHeight(self.bounds);
+        frame = CGRectMake(0, 0, _calculator.yAxisViewWidth, height);
+        _yAxisView.frame = frame;
+        [_yAxisView setNeedsDisplay];
     }
-    
-    height = CGRectGetHeight(self.bounds);
-    frame = CGRectMake(0, 0, _calculator.yAxisViewWidth, height);
-    _yAxisView.frame = frame;
-    [_yAxisView setNeedsDisplay];
     
     //* * * * * * * * * * * * * * * * * * * * *//
     //                 reset X axis            //
@@ -242,16 +245,14 @@
         _xAxisView.parentView = self;
         _xAxisView.backgroundColor = [UIColor clearColor];
         [_contentScrollView addSubview:_xAxisView];
+        height = _calculator.xAxisLabelHeight + 2;
+        y = CGRectGetHeight(self.bounds) - height;
+        x = 0;
+        width = _calculator.drawableAreaWidth;
+        frame = CGRectMake(x, y, width, height);
+        _xAxisView.frame = frame;
+        [_xAxisView setNeedsDisplay];
     }
-    
-    height = _calculator.xAxisLabelHeight + 2;
-    y = CGRectGetHeight(self.bounds) - height;
-    x = 0;
-    width = _calculator.drawableAreaWidth;
-    frame = CGRectMake(x, y, width, height);
-    _xAxisView.frame = frame;
-    [_xAxisView setNeedsDisplay];
-
     
     //* * * * * * * * * * * * * * * * * * * *//
     //           reset reference line        //
@@ -261,6 +262,11 @@
         _verticalReferenceLineGraph.backgroundColor = [UIColor clearColor];
         _verticalReferenceLineGraph.parentView = self;
         [_contentScrollView addSubview:_verticalReferenceLineGraph];
+     
+        frame = CGRectMake(0, 0, _contentScrollView.contentSize.width, _calculator.drawableAreaHeight);
+        _verticalReferenceLineGraph.frame = frame;
+        [_verticalReferenceLineGraph setNeedsDisplay];
+        
     }
     
     if (!_horizontalReferenceLineGraph) {
@@ -268,6 +274,10 @@
         _horizontalReferenceLineGraph.backgroundColor = [UIColor clearColor];
         _horizontalReferenceLineGraph.parentView = self;
         [self insertSubview:_horizontalReferenceLineGraph belowSubview:_contentScrollView];
+        
+        frame = CGRectMake(CGRectGetMaxX(_yAxisView.frame), 0, _calculator.lineGraphWindowWidth, _calculator.drawableAreaHeight);
+        _horizontalReferenceLineGraph.frame = frame;
+        [_horizontalReferenceLineGraph setNeedsDisplay];
     }
     
     _verticalReferenceLineGraph.verticalReferenceLineColor = _verticalReferenceLineColor;
@@ -300,15 +310,7 @@
     _horizontalReferenceLineGraph.animationStyle = _animationStyle;
     _horizontalReferenceLineGraph.animationDuration = _animationDuration;
     
-    frame = CGRectMake(0, 0, _contentScrollView.contentSize.width, _calculator.drawableAreaHeight);
-    _verticalReferenceLineGraph.frame = frame;
-    [_verticalReferenceLineGraph setNeedsDisplay];
-    
-    frame = CGRectMake(CGRectGetMaxX(_yAxisView.frame), 0, _calculator.lineGraphWindowWidth, _calculator.drawableAreaHeight);
-    _horizontalReferenceLineGraph.frame = frame;
-    [_horizontalReferenceLineGraph setNeedsDisplay];
-    
-    
+  
     //* * * * * * * * * * * * * * * * * * * *//
     //      reset pinch view shape           //
     //* * * * * * * * * * * * * * * * * * * *//
@@ -317,12 +319,12 @@
         _pinchView.backgroundColor = [UIColor clearColor];
         [self setupPinchGesture];
         [_contentScrollView addSubview:_pinchView];
+        frame = CGRectZero;
+        frame.size = _contentScrollView.contentSize;
+        frame.size.height = _calculator.drawableAreaHeight;
+        _pinchView.frame = frame;
     }
-    frame = CGRectZero;
-    frame.size = _contentScrollView.contentSize;
-    frame.size.height = _calculator.drawableAreaHeight;
-    _pinchView.frame = frame;
-    
+ 
     //* * * * * * * * * * * * * * * * * * * *//
     //            reset line shape           //
     //* * * * * * * * * * * * * * * * * * * *//
@@ -465,6 +467,7 @@
     _yAxisView.alpha = 1.0;
     _horizontalReferenceLineGraph.alpha = 1.0;
 }
+
 - (void)recoverComponentForPinchCancel {
     
     CGAffineTransform transform = CGAffineTransformIdentity;
@@ -530,6 +533,8 @@
     
     [_horizontalReferenceLineGraph moveReferenceLineToPoint:point];
     [_verticalReferenceLineGraph moveReferenceLineToPoint:point];
+    NSLog(@"New Pont X %f", point.x);
+    NSLog(@"New Pont Y %f", point.y);
     if ([_delegate respondsToSelector:@selector(lineChartView:didMovedTouchToSegmentOfPoint:value:)]) {
         [_delegate lineChartView:self didMovedTouchToSegmentOfPoint:originalPoint value:[_calculator valueReferToVerticalLocation:point.y]];
     }

@@ -29,6 +29,8 @@
 @property (nonatomic, weak) WYLineChartView<WYLineChartMainLineViewDelegate> *parentView;
 @property (nonatomic, strong) NSArray *points;
 
+@property (nonatomic) CGPoint *changePointLocation;
+
 @property (nonatomic) WYLineChartMainLineStyle style;
 
 @property (nonatomic) UIColor *lineColor;

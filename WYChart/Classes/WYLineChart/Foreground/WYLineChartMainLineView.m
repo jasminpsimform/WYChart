@@ -47,7 +47,7 @@ NSString * const kWYLineChartLineAttributeJunctionSize = @"kWYLineChartLineAttri
 @end
 
 @implementation WYLineChartMainLineView
-
+@synthesize changePointLocation;
 - (void)layoutSubviews {
     [super layoutSubviews];
     
@@ -489,27 +489,28 @@ NSString * const kWYLineChartLineAttributeJunctionSize = @"kWYLineChartLineAttri
     
     _pressGestureRecognize = [[UILongPressGestureRecognizer alloc] init];
     [_pressGestureRecognize addTarget:self action:@selector(handleGestureRecognize:)];
-    _pressGestureRecognize.minimumPressDuration = 0.7;
+    _pressGestureRecognize.minimumPressDuration = 0.02;
     _pressGestureRecognize.enabled = _touchable;
     [self addGestureRecognizer:_pressGestureRecognize];
 }
 
 - (void)handleGestureRecognize:(UIGestureRecognizer *)recognize {
    
-//    NSLog(@"gesture.view = %@", recognize.view);
+    // NSLog(@"gesture.view = %@", recognize.view);
     CGPoint location = [recognize locationInView:self];
     NSLog(@"location : %@", NSStringFromCGPoint(location));
-    
+    changePointLocation = &location;
     WYLineChartPoint *originalPoint;
     WYLineChartPathSegment *segment;
+    WYLineChartPathSegment *firstSegment;
     CGFloat locationOnBezierPath;
     CGPoint movingPoint;
     CGPoint touchViewCenter;
     CGFloat maxX, minX;
     SEL selector = nil;
     
-    maxX = ((WYLineChartPoint *)[_points lastObject]).x - 1;
-    minX = ((WYLineChartPoint *)[_points firstObject]).x + 1;
+    maxX = 0;
+    minX = 0;
     
     segment = [_parentView.calculator segmentForPoint:location
                                            inSegments:_pathSegments];
@@ -530,10 +531,17 @@ NSString * const kWYLineChartLineAttributeJunctionSize = @"kWYLineChartLineAttri
             }];
         }
     } else {
+        if (firstSegment != nil) {
+            firstSegment = segment;
+        }
         originalPoint = [segment originalPointForPoint:location];
         locationOnBezierPath = [segment yValueCalculteFromQuadraticFormulaForPoint:location];
         // moving point
+        
+        NSLog(@"originalPoint.x : %f", (originalPoint.value));
+//        NSLog(@"locationOnBezierPath : %f", (locationOnBezierPath));
         movingPoint = CGPointMake(location.x, locationOnBezierPath);
+        NSLog(@"movingPoint.y : %f", (movingPoint.y));
         _movingPoint.center = movingPoint;
         // touchview center
         // 1.recalculate scale from touchview's transform
@@ -548,30 +556,35 @@ NSString * const kWYLineChartLineAttributeJunctionSize = @"kWYLineChartLineAttri
         
         if (recognize.state == UIGestureRecognizerStateEnded
             || recognize.state == UIGestureRecognizerStateCancelled
-            || recognize.state == UIGestureRecognizerStateRecognized
-            )/*|| movingPoint.x <= minX || movingPoint.x >= maxX*/ {
-//            NSLog(@"gesture end with state : %lu", recognize.state);
+            || recognize.state == UIGestureRecognizerStateRecognized)
+//            || movingPoint.y <= minX
+//            || movingPoint.y >= maxX) {
+        {
+            NSLog(@"gesture end with state : %lu", recognize.state);
             
-            [self addScaleSpringAnimationForView:_movingPoint reverse:true delay:0 forKeyPath:@"moving"];
-            selector = @selector(mainLineView:didEndedTouchAtPoint:belongToSegmentOfPoint:);
-            
-            [UIView animateWithDuration:0.8 animations:^{
-                _touchView.alpha = 0.0;
-            } completion:^(BOOL finished) {
-                _movingPoint.hidden = true;
-            }];
+//            [self addScaleSpringAnimationForView:_movingPoint reverse:true delay:0 forKeyPath:@"moving"];
+//            selector = @selector(mainLineView:didEndedTouchAtPoint:belongToSegmentOfPoint:);
+//
+//            [UIView animateWithDuration:0.8 animations:^{
+//                _touchView.alpha = 0.0;
+//            } completion:^(BOOL finished) {
+//                _movingPoint.hidden = true;
+//            }];
         } else if (recognize.state == UIGestureRecognizerStateBegan) {
-            
-            _movingPoint.hidden = false;
-            [self addScaleSpringAnimationForView:_movingPoint reverse:false delay:0 forKeyPath:@"moving"];
-            selector = @selector(mainLineView:didBeganTouchAtPoint:belongToSegmentOfPoint:);
-            
-            [UIView animateWithDuration:0.5 animations:^{
-                _touchView.alpha = 1.0;
-            }];
+
+//            _movingPoint.hidden = false;
+//            [self addScaleSpringAnimationForView:_movingPoint reverse:false delay:0 forKeyPath:@"moving"];
+//            selector = @selector(mainLineView:didBeganTouchAtPoint:belongToSegmentOfPoint:);
+//
+//            [UIView animateWithDuration:0.5 animations:^{
+//                _touchView.alpha = 1.0;
+//            }];
             
         } else if (recognize.state == UIGestureRecognizerStateChanged) {
-            selector = @selector(mainLineView:didmovedTouchToPoint:belongToSegmentOfPoint:);
+           // if (movingPoint.x <= originalPoint.x) {
+                selector = @selector(mainLineView:didmovedTouchToPoint:belongToSegmentOfPoint:);
+           // }
+            
         }
     }
     
@@ -586,7 +599,7 @@ NSString * const kWYLineChartLineAttributeJunctionSize = @"kWYLineChartLineAttri
 #pragma clang diagnostic ignored "-Wincompatible-pointer-types"
             [invocation setArgument:&self atIndex:2];
 #pragma clang diagnostic pop
-            [invocation setArgument:&movingPoint
+            [invocation setArgument:&location
                             atIndex:3];
             [invocation setArgument:&originalPoint
                             atIndex:4];
@@ -634,7 +647,6 @@ NSString * const kWYLineChartLineAttributeJunctionSize = @"kWYLineChartLineAttri
 }
 
 - (CGPoint)pointBelowPoint:(CGPoint)point forDistance:(CGFloat)distance {
-    
     return CGPointMake(point.x, point.y + distance);
 }
 

@@ -134,7 +134,6 @@
     
     centerX = labelWidth / 2;
     
-    
     CGFloat yValue, yLocation;
     
     for (NSInteger idx = 0; idx < labelCount; ++idx) {

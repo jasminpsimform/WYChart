@@ -36,7 +36,9 @@
         for (NSUInteger sidx = 0; sidx < pointsArray.count; sidx ++) {
             WYLineChartPoint *point = pointsArray[sidx];
             text = [self.parentView.datasource lineChartView:self.parentView contextTextForPointAtIndexPath:[NSIndexPath indexPathForRow:sidx inSection:fidx]];
-            if (!text) continue;
+           // text = [NSString stringWithFormat: @"%.0f", point.value];
+            if (!text)
+                continue;
             
             labelY = point.y  + (point.y > centerY ? (- labelHeight/2 - 5) : (labelHeight/2 + 5));
             
@@ -54,7 +56,7 @@
             label.text = text;
             label.font = [UIFont systemFontOfSize:10.f];
             label.textColor = self.parentView.pointsLabelsColor;
-            label.backgroundColor = [self.parentView.pointsLabelsBackgroundColor colorWithAlphaComponent:0.5];
+           // label.backgroundColor = [self.parentView.pointsLabelsBackgroundColor colorWithAlphaComponent:0.5];
             label.layer.cornerRadius = 2.f;
             label.layer.masksToBounds = YES;
             

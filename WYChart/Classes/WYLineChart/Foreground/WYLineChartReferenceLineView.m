@@ -206,87 +206,87 @@
     //remove sublayer
     [[self.layer sublayers] makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
 
-    //* * * * * * * * * * * * * * * * * * * *//
-    //         Draw Reference Line           //
-    //* * * * * * * * * * * * * * * * * * * *//
-    
-    NSInteger verticalLineCount = 0;
-    
-    if ([self.parentView.delegate respondsToSelector:@selector(numberOfReferenceLineVerticalInLineChartView:)]) {
-        verticalLineCount = [self.parentView.delegate numberOfReferenceLineVerticalInLineChartView:self.parentView];
-    }
-    
-    WYLineChartPoint *point;
-    UIBezierPath *verticalReferencePath;
-    CAShapeLayer *verticalReferenceLineLayer;
-    
-    if (verticalLineCount > 0) {
-        
-        verticalReferenceLineLayer = [CAShapeLayer layer];
-        verticalReferencePath = [UIBezierPath bezierPath];
-        
-        for (NSInteger idx = 0; idx < verticalLineCount; ++idx) {
-            point = [self.parentView.datasource lineChartView:self.parentView pointReferToVerticalReferenceLineAtIndex:idx];
-            [verticalReferencePath moveToPoint:CGPointMake(point.x, 0)];
-            [verticalReferencePath addLineToPoint:CGPointMake(point.x, boundsHeight)];
-        }
-        
-        verticalReferenceLineLayer.path = verticalReferencePath.CGPath;
-        verticalReferenceLineLayer.strokeColor = self.verticalReferenceLineColor.CGColor;
-        verticalReferenceLineLayer.lineWidth = self.verticalReferenceLineWidth;
-        verticalReferenceLineLayer.opacity = self.verticalReferenceLineAlpha;
-        if (self.verticalReferenceLineDashPattern) verticalReferenceLineLayer.lineDashPattern = self.verticalReferenceLineDashPattern;
-        
-        [self.layer addSublayer:verticalReferenceLineLayer];
-    }
-    
-    // draw moving reference line
-    self.movingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 2, boundsHeight)];
-    self.movingView.backgroundColor = [UIColor clearColor];
-    
-    CAShapeLayer *movingReferenceLineLayer;
-    UIBezierPath *movingPath = [UIBezierPath bezierPath];
-    [movingPath moveToPoint:CGPointZero];
-    [movingPath addLineToPoint:CGPointMake(0, boundsHeight)];
-    movingReferenceLineLayer = [CAShapeLayer layer];
-    movingReferenceLineLayer.path = movingPath.CGPath;
-    movingReferenceLineLayer.strokeColor = self.touchReferenceLineColor.CGColor;
-    movingReferenceLineLayer.lineDashPattern = self.touchReferenceLineDashPattern;
-    movingReferenceLineLayer.lineWidth = self.touchReferenceLineWidth;
-    movingReferenceLineLayer.opacity = self.touchReferenceLineAlpha;
-    [self.movingView.layer addSublayer:movingReferenceLineLayer];
-    [self addSubview:self.movingView];
-    self.movingView.hidden = true;
-    
-    //* * * * * * * * * * * * * * * * * * * *//
-    //               Animations              //
-    //* * * * * * * * * * * * * * * * * * * *//
-    
-    if (self.animationStyle != kWYLineChartNoneAnimation) {
-        
-        CGFloat verticalToValue;
-        NSString *keyPath;
-        
-        verticalToValue = 0;
-        
-        if (self.animationStyle == kWYLineChartAnimationDrawing) {
-            
-            keyPath = @"strokeEnd";
-            verticalToValue = 1;
-        } else if (self.animationStyle == kWYLineChartAnimationWidth) {
-            
-            keyPath = @"lineWidth";
-            verticalToValue = self.verticalReferenceLineWidth;
-        } else {
-            
-            keyPath = @"opacity";
-            verticalToValue = self.verticalReferenceLineAlpha;
-        }
-        
-        
-        [self shapeLayer:verticalReferenceLineLayer addAnimationForKeyPath:keyPath
-               fromValue:0.0 toValue:verticalToValue];
-    }
+//    //* * * * * * * * * * * * * * * * * * * *//
+//    //         Draw Reference Line           //
+//    //* * * * * * * * * * * * * * * * * * * *//
+//
+//    NSInteger verticalLineCount = 0;
+//
+//    if ([self.parentView.delegate respondsToSelector:@selector(numberOfReferenceLineVerticalInLineChartView:)]) {
+//        verticalLineCount = [self.parentView.delegate numberOfReferenceLineVerticalInLineChartView:self.parentView];
+//    }
+//
+//    WYLineChartPoint *point;
+//    UIBezierPath *verticalReferencePath;
+//    CAShapeLayer *verticalReferenceLineLayer;
+//
+//    if (verticalLineCount > 0) {
+//
+//        verticalReferenceLineLayer = [CAShapeLayer layer];
+//        verticalReferencePath = [UIBezierPath bezierPath];
+//
+//        for (NSInteger idx = 0; idx < verticalLineCount; ++idx) {
+//            point = [self.parentView.datasource lineChartView:self.parentView pointReferToVerticalReferenceLineAtIndex:idx];
+//            [verticalReferencePath moveToPoint:CGPointMake(point.x, 0)];
+//            [verticalReferencePath addLineToPoint:CGPointMake(point.x, boundsHeight)];
+//        }
+//
+//        verticalReferenceLineLayer.path = verticalReferencePath.CGPath;
+//        verticalReferenceLineLayer.strokeColor = self.verticalReferenceLineColor.CGColor;
+//        verticalReferenceLineLayer.lineWidth = self.verticalReferenceLineWidth;
+//        verticalReferenceLineLayer.opacity = self.verticalReferenceLineAlpha;
+//        if (self.verticalReferenceLineDashPattern) verticalReferenceLineLayer.lineDashPattern = self.verticalReferenceLineDashPattern;
+//
+//        [self.layer addSublayer:verticalReferenceLineLayer];
+//    }
+//
+//    // draw moving reference line
+//    self.movingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 2, boundsHeight)];
+//    self.movingView.backgroundColor = [UIColor clearColor];
+//
+//    CAShapeLayer *movingReferenceLineLayer;
+//    UIBezierPath *movingPath = [UIBezierPath bezierPath];
+//    [movingPath moveToPoint:CGPointZero];
+//    [movingPath addLineToPoint:CGPointMake(0, boundsHeight)];
+//    movingReferenceLineLayer = [CAShapeLayer layer];
+//    movingReferenceLineLayer.path = movingPath.CGPath;
+//    movingReferenceLineLayer.strokeColor = self.touchReferenceLineColor.CGColor;
+//    movingReferenceLineLayer.lineDashPattern = self.touchReferenceLineDashPattern;
+//    movingReferenceLineLayer.lineWidth = self.touchReferenceLineWidth;
+//    movingReferenceLineLayer.opacity = self.touchReferenceLineAlpha;
+//    [self.movingView.layer addSublayer:movingReferenceLineLayer];
+//    [self addSubview:self.movingView];
+//    self.movingView.hidden = true;
+//
+//    //* * * * * * * * * * * * * * * * * * * *//
+//    //               Animations              //
+//    //* * * * * * * * * * * * * * * * * * * *//
+//
+//    if (self.animationStyle != kWYLineChartNoneAnimation) {
+//
+//        CGFloat verticalToValue;
+//        NSString *keyPath;
+//
+//        verticalToValue = 0;
+//
+//        if (self.animationStyle == kWYLineChartAnimationDrawing) {
+//
+//            keyPath = @"strokeEnd";
+//            verticalToValue = 1;
+//        } else if (self.animationStyle == kWYLineChartAnimationWidth) {
+//
+//            keyPath = @"lineWidth";
+//            verticalToValue = self.verticalReferenceLineWidth;
+//        } else {
+//
+//            keyPath = @"opacity";
+//            verticalToValue = self.verticalReferenceLineAlpha;
+//        }
+//
+//
+//        [self shapeLayer:verticalReferenceLineLayer addAnimationForKeyPath:keyPath
+//               fromValue:0.0 toValue:verticalToValue];
+//    }
 }
 
 - (void)moveReferenceLineToPoint:(CGPoint)point {

@@ -85,7 +85,7 @@
     NSDictionary *attributes = @{NSFontAttributeName:_parentView.labelsFont};
     CGSize lableMaxSize = [valueString sizeWithAttributes:attributes];
     
-    return lableMaxSize.width + 25.f;
+    return lableMaxSize.width + 50.f;
 }
 
 - (CGFloat)xAxisLabelHeight {
@@ -131,9 +131,9 @@
                                               return firstPoint.value < secondPoint.value;
                                           }] value];
     CGFloat differ = maxValue - minValue;
-    CGFloat pixels = self.drawableAreaHeight - (_parentView.lineTopMargin + 30.f) - _parentView.lineBottomMargin;
+    CGFloat pixels = self.drawableAreaHeight - (_parentView.lineTopMargin) - _parentView.lineBottomMargin;
     
-    y = (_parentView.lineTopMargin + 30.f) + (differ > 0 ? ((maxValue - value) * pixels / differ) : 0);
+    y = (_parentView.lineTopMargin) + (differ > 0 ? ((maxValue - value) * pixels / differ) : 0);
     y = roundf(y);
     
     return y;
@@ -175,7 +175,7 @@
         
         CGPoint controlPointPre, controlPointSub;
         CGPoint midPoint = [self middlePointBetweenPoint:currentPoint.point andPoint:newPoint.point];
-        
+
         WYLineChartPathSegment *segment;
         
         if (lineStyle == kWYLineChartMainBezierWaveLine) {
@@ -245,6 +245,9 @@
         segment.coefficientA = (p1.y - 2 * p2.y + p3.y) / powf((p3.x - p1.x), 2);
         segment.coefficientB = 2 * (p3.x*(p2.y - p1.y) + p1.x*(p2.y - p3.y)) / powf((p3.x - p1.x), 2);
         segment.coefficientC = p1.y - segment.coefficientA * powf(p1.x, 2) - segment.coefficientB * p1.x;
+        
+        printf("%s", segment);
+        
     } else if (segment.lineStyle == kWYLineChartMainStraightLine) {
         segment.coefficientA = 0;
         segment.coefficientB = (p3.y - p1.y) / (p3.x - p1.x);
@@ -363,14 +366,19 @@
     __block CGFloat sum = 0;
     __block CGFloat count = 0;
     for (NSArray *points in pointsSet) {
-        [points enumerateObjectsUsingBlock:^(WYLineChartPoint * obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            sum += obj.value;
-            count ++;
-        }];
+        if (points.count != 1) {
+            [points enumerateObjectsUsingBlock:^(WYLineChartPoint * obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                
+                sum += obj.value;
+                count ++;
+                
+            }];
+        }
+       
     }
     
     CGFloat average = (CGFloat)sum / count;
-    return average;
+    return 0;
 }
 
 - (CGFloat)verticalLocationForValue:(CGFloat)average {
@@ -389,9 +397,9 @@
                                               return firstPoint.value < secondPoint.value;
                                           }] value];
     CGFloat differ = maxValue - minValue;
-    CGFloat pixels = self.drawableAreaHeight - (_parentView.lineTopMargin + 30.f) - _parentView.lineBottomMargin;
+    CGFloat pixels = self.drawableAreaHeight - (_parentView.lineTopMargin) - _parentView.lineBottomMargin;
     
-    value = maxValue - (location - (_parentView.lineTopMargin + 30.f)) * differ / pixels;
+    value = maxValue - (location - (_parentView.lineTopMargin)) * differ / pixels;
     return value;
 }
 
