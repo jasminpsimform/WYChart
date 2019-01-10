@@ -153,7 +153,7 @@
 
 - (CGFloat)gapBetweenPointsHorizontalInLineChartView:(WYLineChartView *)chartView {
     
-    return 0.f;
+    return 50.f;
 }
 
 - (NSInteger)numberOfReferenceLineVerticalInLineChartView:(WYLineChartView *)chartView {
@@ -312,7 +312,7 @@
             lineColor = [UIColor colorWithRed:250.f/255.f green:134.f/255.f blue:94.f/255.f alpha:0.9];
             break;
         case 2:
-            lineColor = [UIColor colorWithRed:242.f/255.f green:188.f/255.f blue:13.f/255.f alpha:0.9];
+            lineColor = [UIColor colorWithRed:242.f/255.f green:22.f/255.f blue:13.f/255.f alpha:0.9];
             break;
         default:
             break;
