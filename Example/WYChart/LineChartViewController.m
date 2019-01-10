@@ -41,15 +41,15 @@
     
     _settingViewController = [[LineChartSettingViewController alloc] init];
     
-    _chartView = [[WYLineChartView alloc] initWithFrame:CGRectMake(0, 20, CGRectGetWidth(self.view.bounds), 300)];
+    _chartView = [[WYLineChartView alloc] initWithFrame:CGRectMake(0, 20, CGRectGetWidth(self.view.bounds), 400)];
     _chartView.delegate = self;
     _chartView.datasource = self;
     _chartView.points = [NSArray arrayWithArray:_points];
     
     _chartView.touchPointColor = [UIColor redColor];
     
-    _chartView.yAxisHeaderPrefix = @"消费总数";
-    _chartView.yAxisHeaderSuffix = @"日期";
+    _chartView.yAxisHeaderPrefix = @"";
+    _chartView.yAxisHeaderSuffix = @"";
     
     _chartView.labelsFont = [UIFont systemFontOfSize:13];
     
@@ -115,27 +115,14 @@
     
     NSArray *(^ProducePointsA)() = ^() {
         NSMutableArray *mutableArray = [NSMutableArray array];
-        NSArray *points = [WYLineChartPoint pointsFromValueArray:@[@(70706.89),@(40446.85),@(50555.67),@(20216.48),@(60664.45),@(80890.34),@(30321.2)]];
+        NSArray *points = [WYLineChartPoint pointsFromValueArray:@[@(-3),@(-2),@(3),@(2),@(-2)]];
         [mutableArray addObject:points];
-        points = [WYLineChartPoint pointsFromValueArray:@[@(50503.134)]];
 //        [mutableArray addObject:points];
         return mutableArray;
     };
     
-    NSArray *(^ProducePointsB)() = ^() {
-        NSMutableArray *mutableArray = [NSMutableArray array];
-        NSArray *points = [WYLineChartPoint pointsFromValueArray:@[@(70706.89),@(75623.4),@(90980.f),@(80890.34),@(60321.2)]];
-        [mutableArray addObject:points];
-        points = [WYLineChartPoint pointsFromValueArray:@[@(50503.134),@(50446.85),@(50555.67),@(60216.48),@(50664.45),@(80890.34),@(30321.2)]];
-        [mutableArray addObject:points];
-        points = [WYLineChartPoint pointsFromValueArray:@[@(30706.89),@(40446.85),@(40555.67),@(20216.48),@(30664.45),@(20890.34),@(20321.2)]];
-        [mutableArray addObject:points];
-        return mutableArray;
-    };
-    
-    static BOOL isPointsA = false;
-    _points = !isPointsA ? ProducePointsA() : ProducePointsB();
-    isPointsA = !isPointsA;
+    _points = ProducePointsA();
+   
     _chartView.points = [NSArray arrayWithArray:_points];
     
     [_chartView updateGraph];
@@ -166,7 +153,7 @@
 
 - (CGFloat)gapBetweenPointsHorizontalInLineChartView:(WYLineChartView *)chartView {
     
-    return 60.f;
+    return 0.f;
 }
 
 - (NSInteger)numberOfReferenceLineVerticalInLineChartView:(WYLineChartView *)chartView {
@@ -183,8 +170,21 @@
 }
 
 - (void)lineChartView:(WYLineChartView *)lineView didMovedTouchToSegmentOfPoint:(WYLineChartPoint *)originalPoint value:(CGFloat)value {
-//    NSLog(@"changed move for value : %f", value);
-    _touchLabel.text = [NSString stringWithFormat:@"%f", value];
+//    WYLineChartPathSegment *segment;
+//    CGFloat originalPoint = [segment originalPointForPoint:originalPoint];
+//    CGFloat locationOnBezierPath = [segment yValueCalculteFromQuadraticFormulaForPoint:location];
+//
+    // CGFloat *newPoint = round(originalPoint.value*100) / 100.0;
+    
+    if (value >= -3
+        && value <= 3) {
+        originalPoint.value = value;
+        [_chartView updateGraph];
+        NSLog(@"changed move for value : %f", value);
+        _touchLabel.text = [NSString stringWithFormat:@"%f", value];
+    }
+    
+   
 }
 
 - (void)lineChartView:(WYLineChartView *)lineView didEndedTouchToSegmentOfPoint:(WYLineChartPoint *)originalPoint value:(CGFloat)value {
@@ -211,17 +211,17 @@
 
 - (NSString *)lineChartView:(WYLineChartView *)chartView contextTextForPointAtIndexPath:(NSIndexPath *)indexPath {
     
-    if((indexPath.row%3 != 0 && indexPath.section%2 != 0)
-       || (indexPath.row%3 == 0 && indexPath.section%2 == 0)) return nil;
+//    if((indexPath.row%3 != 0 && indexPath.section%2 != 0)
+//       || (indexPath.row%3 == 0 && indexPath.section%2 == 0)) return nil;
     
     NSArray *pointsArray = _chartView.points[indexPath.section];
     WYLineChartPoint *point = pointsArray[indexPath.row];
-    NSString *text = [NSString stringWithFormat:@"%lu", (NSInteger)point.value];
+    NSString *text = [NSString stringWithFormat: @"%.0f", point.value];
     return text;
 }
 
 - (NSString *)lineChartView:(WYLineChartView *)chartView contentTextForXAxisLabelAtIndex:(NSInteger)index {
-    return [NSString stringWithFormat:@"%lu月", index+1];
+    return @"";
 }
 
 - (WYLineChartPoint *)lineChartView:(WYLineChartView *)chartView pointReferToXAxisLabelAtIndex:(NSInteger)index {
@@ -238,18 +238,21 @@
     CGFloat value;
     switch (index) {
         case 0:
-            value = [self.chartView.calculator minValuePointsOfLinesPointSet:self.chartView.points].value;
+            //            value = [self.chartView.calculator minValuePointsOfLinesPointSet:self.chartView.points].value;
+            value = -3;
             break;
         case 1:
-            value = [self.chartView.calculator maxValuePointsOfLinesPointSet:self.chartView.points].value;
+            //            value = [self.chartView.calculator maxValuePointsOfLinesPointSet:self.chartView.points].value;
+            value = 3;
             break;
         case 2:
-            value = [self.chartView.calculator calculateAverageForPointsSet:self.chartView.points];
+            //            value = [self.chartView.calculator calculateAverageForPointsSet:self.chartView.points];
+            value = 0;
             break;
         default:
             break;
     }
-    return [NSString stringWithFormat:@"%lu", (NSInteger)value];
+    return [NSString stringWithFormat:@"%.0f", value];
 }
 
 - (CGFloat)lineChartView:(WYLineChartView *)chartView valueReferToYAxisLabelAtIndex:(NSInteger)index {
@@ -257,13 +260,16 @@
     CGFloat value;
     switch (index) {
         case 0:
-            value = [self.chartView.calculator minValuePointsOfLinesPointSet:self.chartView.points].value;
+//            value = [self.chartView.calculator minValuePointsOfLinesPointSet:self.chartView.points].value;
+            value = -3;
             break;
         case 1:
-            value = [self.chartView.calculator maxValuePointsOfLinesPointSet:self.chartView.points].value;
+//            value = [self.chartView.calculator maxValuePointsOfLinesPointSet:self.chartView.points].value;
+            value = 3;
             break;
         case 2:
-            value = [self.chartView.calculator calculateAverageForPointsSet:self.chartView.points];
+//            value = [self.chartView.calculator calculateAverageForPointsSet:self.chartView.points];
+            value = 0;
             break;
         default:
             break;

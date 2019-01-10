@@ -81,6 +81,7 @@
 }
 
 #pragma mark - Pie Chart View Delegate
+
 - (NSInteger)numberOfLabelOnPieChartView:(WYPieChartView *)pieChartView {
     
     return 5;

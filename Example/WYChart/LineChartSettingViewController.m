@@ -46,8 +46,8 @@ NSString *const kLineChartLineAttributes = @"kLineChartLineAttributes";
 - (instancetype)init {
     self = [super init];
     if (self) {
-        _parameters = [NSMutableDictionary dictionaryWithObjectsAndKeys:@2.0, kLineChartAnimationDuration,
-                       @(kWYLineChartAnimationDrawing), kLineChartAnimationStyle,
+        _parameters = [NSMutableDictionary dictionaryWithObjectsAndKeys:@0.0, kLineChartAnimationDuration,
+                       @(kWYLineChartNoneAnimation), kLineChartAnimationStyle,
                        @(false), kLineChartScrollable,
                        @(true), kLineChartPinchable,
                        COLOR_1TH, kLineChartBackgroundColor,
