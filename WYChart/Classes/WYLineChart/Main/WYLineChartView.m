@@ -113,6 +113,15 @@
     return self;
 }
 
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    self = [super initWithCoder:coder];
+    if (self) {
+        [self initializeProperty];
+    }
+    return self;
+}
+
 - (WYLineChartMainLineView *)getLineGraphAtIndex:(NSUInteger)index {
     if (!_lineGraphArray) {
         _lineGraphArray = [NSMutableArray array];
