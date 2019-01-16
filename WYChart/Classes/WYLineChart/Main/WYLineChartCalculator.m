@@ -122,14 +122,18 @@
 - (CGFloat)yLocationForPointsValue:(CGFloat)value {
     
     CGFloat y;
-    CGFloat maxValue = [[self filterPointsOfLinesPointSet:_parentView.points
-                                         comparatorBlock:^BOOL(WYLineChartPoint *firstPoint, WYLineChartPoint *secondPoint) {
-                                             return firstPoint.value > secondPoint.value;
-                                         }] value];
-    CGFloat minValue = [[self filterPointsOfLinesPointSet:_parentView.points
-                                          comparatorBlock:^BOOL(WYLineChartPoint *firstPoint, WYLineChartPoint *secondPoint) {
-                                              return firstPoint.value < secondPoint.value;
-                                          }] value];
+//    CGFloat maxValue = [[self filterPointsOfLinesPointSet:_parentView.points
+//                                         comparatorBlock:^BOOL(WYLineChartPoint *firstPoint, WYLineChartPoint *secondPoint) {
+//                                             return firstPoint.value > secondPoint.value;
+//                                         }] value];
+//    CGFloat minValue = [[self filterPointsOfLinesPointSet:_parentView.points
+//                                          comparatorBlock:^BOOL(WYLineChartPoint *firstPoint, WYLineChartPoint *secondPoint) {
+//                                              return firstPoint.value < secondPoint.value;
+//                                          }] value];
+    
+    CGFloat maxValue = _parentView.maxValue;
+    CGFloat minValue = _parentView.minValue;
+    
     CGFloat differ = maxValue - minValue;
     CGFloat pixels = self.drawableAreaHeight - (_parentView.lineTopMargin) - _parentView.lineBottomMargin;
     
@@ -378,6 +382,7 @@
     }
     
     CGFloat average = (CGFloat)sum / count;
+    // return average;
     return 0;
 }
 
@@ -388,14 +393,18 @@
 - (CGFloat)valueReferToVerticalLocation:(CGFloat)location {
     
     CGFloat value;
-    CGFloat maxValue = [[self filterPointsOfLinesPointSet:_parentView.points
-                                          comparatorBlock:^BOOL(WYLineChartPoint *firstPoint, WYLineChartPoint *secondPoint) {
-                                              return firstPoint.value > secondPoint.value;
-                                          }] value];
-    CGFloat minValue = [[self filterPointsOfLinesPointSet:_parentView.points
-                                          comparatorBlock:^BOOL(WYLineChartPoint *firstPoint, WYLineChartPoint *secondPoint) {
-                                              return firstPoint.value < secondPoint.value;
-                                          }] value];
+//    CGFloat maxValue = [[self filterPointsOfLinesPointSet:_parentView.points
+//                                          comparatorBlock:^BOOL(WYLineChartPoint *firstPoint, WYLineChartPoint *secondPoint) {
+//                                              return firstPoint.value > secondPoint.value;
+//                                          }] value];
+//    CGFloat minValue = [[self filterPointsOfLinesPointSet:_parentView.points
+//                                          comparatorBlock:^BOOL(WYLineChartPoint *firstPoint, WYLineChartPoint *secondPoint) {
+//                                              return firstPoint.value < secondPoint.value;
+//                                          }] value];
+    
+    CGFloat maxValue = _parentView.maxValue;
+    CGFloat minValue = _parentView.minValue;
+    
     CGFloat differ = maxValue - minValue;
     CGFloat pixels = self.drawableAreaHeight - (_parentView.lineTopMargin) - _parentView.lineBottomMargin;
     

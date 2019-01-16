@@ -30,11 +30,13 @@
 //              ]
 // v0.2.0
 @property (nonatomic, strong) NSArray *points;
+@property (nonatomic) CGFloat firstX;
 
 // define if the line graph can scroll
 // default YES.
 @property (nonatomic) BOOL scrollable;
-
+@property (nonatomic) CGFloat maxValue;
+@property (nonatomic) CGFloat minValue;
 //default NO
 @property (nonatomic) BOOL pinchable;
 

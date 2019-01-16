@@ -144,8 +144,9 @@
     //* * * * * * * * * * * * * * * * * * * *//
     //                  Value                //
     //* * * * * * * * * * * * * * * * * * * *//
-    _scrollable = YES;
-    
+    _scrollable = NO;
+    _maxValue = 3;
+    _minValue = -3;
     //* * * * * * * * * * * * * * * * * * * *//
     //                  Rect                 //
     //* * * * * * * * * * * * * * * * * * * *//
@@ -531,8 +532,9 @@
 
 - (void)mainLineView:(WYLineChartMainLineView *)lineView didBeganTouchAtPoint:(CGPoint)point belongToSegmentOfPoint:(WYLineChartPoint *)originalPoint {
 //    NSLog(@"touch point : %li", (long)originalPoint.index);
-    [_horizontalReferenceLineGraph moveReferenceLineToPoint:point];
-    [_verticalReferenceLineGraph moveReferenceLineToPoint:point];
+    _firstX = 0.0;
+//    [_horizontalReferenceLineGraph moveReferenceLineToPoint:point];
+//    [_verticalReferenceLineGraph moveReferenceLineToPoint:point];
     if ([_delegate respondsToSelector:@selector(lineChartView:didBeganTouchAtSegmentOfPoint:value:)]) {
         [_delegate lineChartView:self didBeganTouchAtSegmentOfPoint:originalPoint value:[_calculator valueReferToVerticalLocation:point.y]];
     }
@@ -540,19 +542,28 @@
 
 - (void)mainLineView:(WYLineChartMainLineView *)lineView didmovedTouchToPoint:(CGPoint)point belongToSegmentOfPoint:(WYLineChartPoint *)originalPoint {
     
-    [_horizontalReferenceLineGraph moveReferenceLineToPoint:point];
-    [_verticalReferenceLineGraph moveReferenceLineToPoint:point];
+//    [_horizontalReferenceLineGraph moveReferenceLineToPoint:point];
+//    [_verticalReferenceLineGraph moveReferenceLineToPoint:point];
     NSLog(@"New Pont X %f", point.x);
     NSLog(@"New Pont Y %f", point.y);
-    if ([_delegate respondsToSelector:@selector(lineChartView:didMovedTouchToSegmentOfPoint:value:)]) {
-        [_delegate lineChartView:self didMovedTouchToSegmentOfPoint:originalPoint value:[_calculator valueReferToVerticalLocation:point.y]];
+    if (_firstX == 0.0) {
+        _firstX = point.x;
+    }
+    
+    if ((_firstX <= point.x + 10) && (_firstX >= point.x - 10)) {
+        NSLog(@"valueReferToVerticalLocation x %f", [_calculator verticalLocationForValue:point.x]);
+        
+        if ([_delegate respondsToSelector:@selector(lineChartView:didMovedTouchToSegmentOfPoint:value:)]) {
+            [_delegate lineChartView:self didMovedTouchToSegmentOfPoint:originalPoint value:[_calculator valueReferToVerticalLocation:point.y]];
+        }
     }
 }
 
 - (void)mainLineView:(WYLineChartMainLineView *)lineView didEndedTouchAtPoint:(CGPoint)point belongToSegmentOfPoint:(WYLineChartPoint *)originalPoint {
 //    NSLog(@"touch point : %li", (long)originalPoint.index);
-    [_horizontalReferenceLineGraph dismissReferenceLine];
-    [_verticalReferenceLineGraph dismissReferenceLine];
+    _firstX = 0.0;
+//    [_horizontalReferenceLineGraph dismissReferenceLine];
+//    [_verticalReferenceLineGraph dismissReferenceLine];
     if ([_delegate respondsToSelector:@selector(lineChartView:didEndedTouchToSegmentOfPoint:value:)]) {
         [_delegate lineChartView:self didEndedTouchToSegmentOfPoint:originalPoint value:[_calculator valueReferToVerticalLocation:point.y]];
     }
