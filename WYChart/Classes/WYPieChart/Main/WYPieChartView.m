@@ -126,7 +126,7 @@
 }
 
 - (void)chartAnimationDidStop {
-    [UIView animateWithDuration:1.0
+    [UIView animateWithDuration:0.0
                      animations:^{
                          _foregroundView.alpha = 1;
                      }];

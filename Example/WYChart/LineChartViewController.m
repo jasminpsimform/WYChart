@@ -315,6 +315,7 @@
             lineColor = [UIColor colorWithRed:242.f/255.f green:22.f/255.f blue:13.f/255.f alpha:0.9];
             break;
         default:
+            lineColor = [UIColor colorWithRed:242.f/255.f green:22.f/255.f blue:13.f/255.f alpha:0.9];
             break;
     }
     

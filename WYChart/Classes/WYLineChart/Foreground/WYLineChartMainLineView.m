@@ -363,7 +363,7 @@ NSString * const kWYLineChartLineAttributeJunctionSize = @"kWYLineChartLineAttri
         
         _displayLink.paused = false;
         self.userInteractionEnabled = false;
-        [UIView animateWithDuration:_animationDuration + 0.5
+        [UIView animateWithDuration:_animationDuration + 0.0
                               delay:0.0
              usingSpringWithDamping:0.15
               initialSpringVelocity:1.40
@@ -524,7 +524,7 @@ NSString * const kWYLineChartLineAttributeJunctionSize = @"kWYLineChartLineAttri
             movingPoint = originalPoint.point;
             [self addScaleSpringAnimationForView:_movingPoint reverse:true delay:0 forKeyPath:@"moving"];
             selector = @selector(mainLineView:didEndedTouchAtPoint:belongToSegmentOfPoint:);
-            [UIView animateWithDuration:0.8 animations:^{
+            [UIView animateWithDuration:0.0 animations:^{
                 _touchView.alpha = 0.0;
             } completion:^(BOOL finished) {
                 _movingPoint.hidden = true;

@@ -11,7 +11,7 @@
 #import "WYLineChartPoint.h"
 
 #define MAX_YAxisLabelWidth 90
-#define DEFAULT_LabelHeight 35
+#define DEFAULT_LabelHeight 0
 
 @implementation WYLineChartCalculator
 
@@ -34,7 +34,6 @@
     
     CGFloat width;
     CGFloat yAxisLabelWidth = [self yAxisLabelWidth];
-    
     width = CGRectGetWidth(_parentView.frame) - 2 - yAxisLabelWidth;
     
     return width;
@@ -78,6 +77,8 @@
 }
 
 - (CGFloat)yAxisLabelWidth {
+    
+    return 0.0;
     
     CGFloat maxValueOfPoints = [[self maxValuePointsOfLinesPointSet:_parentView.points] value];
     NSString *valueString = [NSString stringWithFormat:@"%.0f", maxValueOfPoints];
