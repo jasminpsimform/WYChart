@@ -100,7 +100,7 @@
 }
 
 - (CGFloat)yAxisViewWidth {
-    return self.yAxisLabelWidth + 3.f;
+    return self.yAxisLabelWidth;
 }
 
 - (CGFloat)xLocationForPointAtIndex:(NSInteger)index {

@@ -106,9 +106,21 @@
 }
 
 - (void)handleSettingButton {
+   
+    NSArray *(^ProducePointsA)() = ^() {
+        NSMutableArray *mutableArray = [NSMutableArray array];
+        NSArray *points = [WYLineChartPoint pointsFromValueArray:@[@(-3),@(-2),@(3),@(2),@(0),@(-2)]];
+        [mutableArray addObject:points];
+        //        [mutableArray addObject:points];
+        return mutableArray;
+    };
     
-    [self.navigationController pushViewController:_settingViewController
-                                         animated:true];
+    _points = ProducePointsA();
+    
+    _chartView.points = [NSArray arrayWithArray:_points];
+    
+    [_chartView updateGraph];
+    
 }
 
 - (void)updateGraph {
@@ -303,21 +315,21 @@
     resultAttributes[kWYLineChartLineAttributeDrawGradient] = attribute[kLineChartDrawGradient];
     resultAttributes[kWYLineChartLineAttributeJunctionStyle] = attribute[kLineChartJunctionStyle];
     
-    UIColor *lineColor;
-    switch (index%3) {
-        case 0:
-            lineColor = [UIColor colorWithRed:165.f/255.f green:203.f/255.f blue:211.f/255.f alpha:0.9];
-            break;
-        case 1:
-            lineColor = [UIColor colorWithRed:250.f/255.f green:134.f/255.f blue:94.f/255.f alpha:0.9];
-            break;
-        case 2:
-            lineColor = [UIColor colorWithRed:242.f/255.f green:22.f/255.f blue:13.f/255.f alpha:0.9];
-            break;
-        default:
-            lineColor = [UIColor colorWithRed:242.f/255.f green:22.f/255.f blue:13.f/255.f alpha:0.9];
-            break;
-    }
+    UIColor *lineColor = [UIColor colorWithRed:0.f/255.f green:0.f/255.f blue:0.f/255.f alpha:0.9];
+//    switch (index%3) {
+//        case 0:
+//            lineColor = [UIColor colorWithRed:0.f/255.f green:0.f/255.f blue:0.f/255.f alpha:0.9];
+//            break;
+//        case 1:
+//            lineColor = [UIColor colorWithRed:250.f/255.f green:134.f/255.f blue:94.f/255.f alpha:0.9];
+//            break;
+//        case 2:
+//            lineColor = [UIColor colorWithRed:242.f/255.f green:22.f/255.f blue:13.f/255.f alpha:0.9];
+//            break;
+//        default:
+//            lineColor = [UIColor colorWithRed:242.f/255.f green:22.f/255.f blue:13.f/255.f alpha:0.9];
+//            break;
+//    }
     
     resultAttributes[kWYLineChartLineAttributeLineColor] = lineColor;
     resultAttributes[kWYLineChartLineAttributeJunctionColor] = lineColor;

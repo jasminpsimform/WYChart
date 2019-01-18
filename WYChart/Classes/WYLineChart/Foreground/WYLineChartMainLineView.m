@@ -128,7 +128,7 @@ NSString * const kWYLineChartLineAttributeJunctionSize = @"kWYLineChartLineAttri
     //* * * * * * * * * * * * * * * * * * * *//
     
     CGPoint firstPoint, lastPoint;
-    CGPoint heighestPoint;
+    CGPoint heighestPoint, currentPoint;
     
     firstPoint = ((WYLineChartPoint *)[_points firstObject]).point;
     lastPoint = ((WYLineChartPoint *)[_points lastObject]).point;
@@ -164,13 +164,14 @@ NSString * const kWYLineChartLineAttributeJunctionSize = @"kWYLineChartLineAttri
             linePathHigher = [UIBezierPath bezierPath];
             point = _points[0];
             //
-            //        currentPoint = CGPointMake(point.x, point.y);
+        
+            currentPoint = CGPointMake(point.x, point.y);
             //        currentLowerPoint = CGPointMake(point.x, point.y - DEFAULT_WAVE_RANGE);
             //        currentHigherPoint = CGPointMake(point.x, point.y + DEFAULT_WAVE_RANGE);
             //
             [linePath moveToPoint:CGPointMake(point.x, point.y)];
             [linePathLower moveToPoint:CGPointMake(point.x, point.y + DEFAULT_RISE_HEIGHT)];
-            //        [linePathHigher moveToPoint:currentHigherPoint];
+            [linePathHigher moveToPoint:CGPointMake(point.x, point.y + DEFAULT_WAVE_RANGE)];
             
             for (NSInteger idx = 0; idx < _pathSegments.count; ++idx) {
                 
@@ -192,6 +193,8 @@ NSString * const kWYLineChartLineAttributeJunctionSize = @"kWYLineChartLineAttri
                         // lower linepath
                         [linePathLower addQuadCurveToPoint:[self pointBelowPoint:pathSegment.endPoint.point forDistance:DEFAULT_RISE_HEIGHT]
                                               controlPoint:[self pointBelowPoint:pathSegment.controlPoint.point forDistance:DEFAULT_RISE_HEIGHT]];
+                        [linePathHigher addQuadCurveToPoint:[self pointAbovePoint:pathSegment.endPoint.point forDistance:DEFAULT_RISE_HEIGHT]
+                                              controlPoint:[self pointAbovePoint:pathSegment.controlPoint.point forDistance:DEFAULT_RISE_HEIGHT]];
                         break;
                     default:
                         break;
@@ -211,13 +214,14 @@ NSString * const kWYLineChartLineAttributeJunctionSize = @"kWYLineChartLineAttri
     
     UIBezierPath *gradientPath;
     UIBezierPath *gradientPathLower;
+    UIBezierPath *gradientPathHigher;
     
     if (_drawGradient && _style != kWYLineChartMainNoneLine) {
         
         // transfer UIColor to CGColor
         NSArray *gradientColors = @[[_lineColor colorWithAlphaComponent:0.6],
                                     [_lineColor colorWithAlphaComponent:0.0]];
-        NSArray *gradientLocation = @[@0, @.95];
+        NSArray *gradientLocation = @[@0, @4.0];
         NSMutableArray *cgColors = [NSMutableArray arrayWithCapacity:gradientColors];
         [gradientColors enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             CGColorRef cgColor;
@@ -249,6 +253,7 @@ NSString * const kWYLineChartLineAttributeJunctionSize = @"kWYLineChartLineAttri
             
             gradientPath = [UIBezierPath bezierPathWithCGPath:linePath.CGPath];
             gradientPathLower = [UIBezierPath bezierPathWithCGPath:linePathLower.CGPath];
+            gradientPathHigher = [UIBezierPath bezierPathWithCGPath:linePathHigher.CGPath];
             
             [gradientPath addLineToPoint:CGPointMake(lastPoint.x, boundsHeight)];
             [gradientPath addLineToPoint:CGPointMake(firstPoint.x, boundsHeight)];
@@ -257,10 +262,14 @@ NSString * const kWYLineChartLineAttributeJunctionSize = @"kWYLineChartLineAttri
             [gradientPathLower addLineToPoint:CGPointMake(lastPoint.x, boundsHeight)];
             [gradientPathLower addLineToPoint:CGPointMake(firstPoint.x, boundsHeight)];
             [gradientPathLower addLineToPoint:CGPointMake(firstPoint.x, firstPoint.y - DEFAULT_RISE_HEIGHT)];
-            //
-            //        [gradientPathHigher addLineToPoint:CGPointMake(currentPoint.x, boundsHeight)];
-            //        [gradientPathHigher addLineToPoint:CGPointMake(point.x, boundsHeight)];
-            //        [gradientPathHigher addLineToPoint:CGPointMake(point.x, point.y + DEFAULT_WAVE_RANGE)];
+          
+            [gradientPathHigher addLineToPoint:CGPointMake(currentPoint.x, boundsHeight)];
+            [gradientPathHigher addLineToPoint:CGPointMake(point.x, boundsHeight)];
+            [gradientPathHigher addLineToPoint:CGPointMake(point.x, point.y + DEFAULT_WAVE_RANGE)];
+            
+//                    [gradientPathHigher addLineToPoint:CGPointMake(currentPoint.x, boundsHeight)];
+//                    [gradientPathHigher addLineToPoint:CGPointMake(point.x, boundsHeight)];
+//                    [gradientPathHigher addLineToPoint:CGPointMake(point.x, point.y + DEFAULT_WAVE_RANGE)];
             maskLayer.path = gradientPath.CGPath;
         }
     }
@@ -648,6 +657,10 @@ NSString * const kWYLineChartLineAttributeJunctionSize = @"kWYLineChartLineAttri
 
 - (CGPoint)pointBelowPoint:(CGPoint)point forDistance:(CGFloat)distance {
     return CGPointMake(point.x, point.y + distance);
+}
+
+- (CGPoint)pointAbovePoint:(CGPoint)point forDistance:(CGFloat)distance {
+    return CGPointMake(point.x, point.y - distance);
 }
 
 @end

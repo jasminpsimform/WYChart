@@ -52,11 +52,11 @@
 #define DEFAULT_TOUCH_REFERENCELINE_DASHPARTTEN @[@2, @2]
 
 #define DEFAULT_SHOW_JUNCTION_SHAPE true
-#define DEFAULT_JUNCTION_COLOR [UIColor whiteColor]
+#define DEFAULT_JUNCTION_COLOR [UIColor blackColor]
 #define DEFAULT_JUNCTION_POINT_STYLE kWYLineChartJunctionShapeSolidCircle
 #define DEFAULT_JUNCTION_POINT_SIZE kWYLineChartJunctionLargeShape
 
-#define DEFAULT_TOUCH_POINT_COLOR [UIColor whiteColor]
+#define DEFAULT_TOUCH_POINT_COLOR [UIColor blackColor]
 #define DEFAULT_TOUCH_POINT_STYLE kWYLineChartJunctionShapeSolidCircle
 #define DEFAULT_TOUCH_POINT_SIZE kWYLineChartJunctionSmallShape
 
@@ -238,14 +238,14 @@
     //              reset Y axis               //
     //* * * * * * * * * * * * * * * * * * * * *//
     if (!_yAxisView) {
-        _yAxisView = [[WYLineChartCoordinateYAXisView alloc] init];
-        _yAxisView.parentView = self;
-        _yAxisView.backgroundColor = [UIColor clearColor];
-        [self addSubview:_yAxisView];
-        height = CGRectGetHeight(self.bounds);
-        frame = CGRectMake(0, 0, _calculator.yAxisViewWidth, height);
-        _yAxisView.frame = frame;
-        [_yAxisView setNeedsDisplay];
+//        _yAxisView = [[WYLineChartCoordinateYAXisView alloc] init];
+//        _yAxisView.parentView = self;
+//        _yAxisView.backgroundColor = [UIColor clearColor];
+//        [self addSubview:_yAxisView];
+//        height = CGRectGetHeight(self.bounds);
+//        frame = CGRectMake(0, 0, _calculator.yAxisViewWidth, height);
+//        _yAxisView.frame = frame;
+//        [_yAxisView setNeedsDisplay];
     }
     
     //* * * * * * * * * * * * * * * * * * * * *//
@@ -256,7 +256,7 @@
         _xAxisView.parentView = self;
         _xAxisView.backgroundColor = [UIColor clearColor];
         [_contentScrollView addSubview:_xAxisView];
-        height = _calculator.xAxisLabelHeight + 2;
+        height = _calculator.xAxisLabelHeight;
         y = CGRectGetHeight(self.bounds) - height;
         x = 0;
         width = _calculator.drawableAreaWidth;
@@ -274,9 +274,9 @@
         _verticalReferenceLineGraph.parentView = self;
         //[_contentScrollView addSubview:_verticalReferenceLineGraph];
      
-        frame = CGRectMake(0, 0, _contentScrollView.contentSize.width, _calculator.drawableAreaHeight);
-        _verticalReferenceLineGraph.frame = frame;
-        [_verticalReferenceLineGraph setNeedsDisplay];
+//        frame = CGRectMake(0, 0, _contentScrollView.contentSize.width, _calculator.drawableAreaHeight);
+//        _verticalReferenceLineGraph.frame = frame;
+//        [_verticalReferenceLineGraph setNeedsDisplay];
         
     }
     
@@ -362,6 +362,7 @@
         lineGraph.lineColor = lineAttributes[kWYLineChartLineAttributeLineColor] ?: DEFAULT_LINE_COLOR;
         lineGraph.lineWidth = lineAttributes[kWYLineChartLineAttributeLineWidth] ? [lineAttributes[kWYLineChartLineAttributeLineWidth] floatValue] : DEFAULT_LINE_WIDTH;
         lineGraph.lineDashPattern = lineAttributes[kWYLineChartLineAttributeLineDashPattern] ?: DEFAULT_LINE_DASHPATTERN;
+    
         lineGraph.drawGradient = lineAttributes[kWYLineChartLineAttributeDrawGradient] ? [lineAttributes[kWYLineChartLineAttributeDrawGradient] boolValue] : DEFAULT_DRAW_GRADIENT;
         
         lineGraph.animationStyle = _animationStyle;
@@ -370,6 +371,7 @@
         lineGraph.junctionColor = lineAttributes[kWYLineChartLineAttributeJunctionColor] ?: DEFAULT_JUNCTION_COLOR;
         lineGraph.junctionStyle = lineAttributes[kWYLineChartLineAttributeJunctionStyle] ? [lineAttributes[kWYLineChartLineAttributeJunctionStyle] unsignedIntegerValue] : DEFAULT_JUNCTION_POINT_STYLE;
         lineGraph.junctionSize = lineAttributes[kWYLineChartLineAttributeJunctionSize] ? [lineAttributes[kWYLineChartLineAttributeJunctionSize] unsignedIntegerValue] : DEFAULT_JUNCTION_POINT_SIZE;
+        // lineGraph.backgroundColor = [UIColor blueColor];
         
         lineGraph.touchable = (_points.count <= 1) && _touchable;
         lineGraph.touchPointColor = _touchPointColor;
@@ -554,6 +556,10 @@
     if ((_firstX <= point.x + 10) && (_firstX >= point.x - 10)) {
         NSLog(@"valueReferToVerticalLocation x %f", [_calculator verticalLocationForValue:point.x]);
         
+        if ([_delegate respondsToSelector:@selector(lineChartView:didMovedTouchToSegmentOfPoint:value:)]) {
+            [_delegate lineChartView:self didMovedTouchToSegmentOfPoint:originalPoint value:[_calculator valueReferToVerticalLocation:point.y]];
+        }
+    } else {
         if ([_delegate respondsToSelector:@selector(lineChartView:didMovedTouchToSegmentOfPoint:value:)]) {
             [_delegate lineChartView:self didMovedTouchToSegmentOfPoint:originalPoint value:[_calculator valueReferToVerticalLocation:point.y]];
         }
