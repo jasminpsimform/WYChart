@@ -21,7 +21,7 @@
 
 #define DEFAULT_LABEL_COLOR [UIColor whiteColor]
 
-#define DEFAULT_POINTS_LABEL_COLOR [UIColor blackColor]
+#define DEFAULT_POINTS_LABEL_COLOR [UIColor whiteColor]
 #define DEFAULT_POINTS_LABEL_BACKGROUNDCOLOR [UIColor blueColor]
 
 #define DEFAULT_LINE_COLOR [UIColor whiteColor]
@@ -30,33 +30,33 @@
 
 #define DEFAULT_DRAW_GRADIENT YES
 
-#define DEFAULT_VERTICAL_REFERENCELINE_COLOR [UIColor blueColor]
+#define DEFAULT_VERTICAL_REFERENCELINE_COLOR [UIColor whiteColor]
 #define DEFAULT_VERTICAL_REFERENCELINE_WIDTH 1.0
 #define DEFAULT_VERTICAL_REFERENCELINE_ALPHA 0.6
 #define DEFAULT_VERTICAL_REFERENCELINE_DASHPARTTEN nil
 
-#define DEFAULT_HORIZONTAL_REFERENCELINE_COLOR [UIColor blueColor]
+#define DEFAULT_HORIZONTAL_REFERENCELINE_COLOR [UIColor whiteColor]
 #define DEFAULT_HORIZONTAL_REFERENCELINE_WIDTH 1.0
 #define DEFAULT_HORIZONTAL_REFERENCELINE_ALPHA 0.6
 #define DEFAULT_HORIZONTAL_REFERENCELINE_DASHPARTTEN @[@2, @2]
 
-#define DEFAULT_AVERAGE_REFERENCELINE_COLOR [UIColor blackColor]
+#define DEFAULT_AVERAGE_REFERENCELINE_COLOR [UIColor whiteColor]
 #define DEFAULT_AVERAGE_REFERENCELINE_WIDTH 2.0
 #define DEFAULT_AVERAGE_REFERENCELINE_ALPHA 0.6
 #define DEFAULT_AVERAGE_REFERENCELINE_DASHPARTTEN @[@2, @2]
 
 #define DEFAULT_TOUCH_ENABLE YES
-#define DEFAULT_TOUCH_REFERENCELINE_COLOR [UIColor blueColor]
+#define DEFAULT_TOUCH_REFERENCELINE_COLOR [UIColor whiteColor]
 #define DEFAULT_TOUCH_REFERENCELINE_WIDTH 1.0
 #define DEFAULT_TOUCH_REFERENCELINE_ALPHA 0.8
 #define DEFAULT_TOUCH_REFERENCELINE_DASHPARTTEN @[@2, @2]
 
 #define DEFAULT_SHOW_JUNCTION_SHAPE true
-#define DEFAULT_JUNCTION_COLOR [UIColor blackColor]
+#define DEFAULT_JUNCTION_COLOR [UIColor whiteColor]
 #define DEFAULT_JUNCTION_POINT_STYLE kWYLineChartJunctionShapeSolidCircle
 #define DEFAULT_JUNCTION_POINT_SIZE kWYLineChartJunctionLargeShape
 
-#define DEFAULT_TOUCH_POINT_COLOR [UIColor blackColor]
+#define DEFAULT_TOUCH_POINT_COLOR [UIColor whiteColor]
 #define DEFAULT_TOUCH_POINT_STYLE kWYLineChartJunctionShapeSolidCircle
 #define DEFAULT_TOUCH_POINT_SIZE kWYLineChartJunctionSmallShape
 
@@ -218,13 +218,13 @@
         _contentScrollView.delegate = self;
         _contentScrollView.showsHorizontalScrollIndicator = false;
         _contentScrollView.showsVerticalScrollIndicator = false;
-      //  _contentScrollView.backgroundColor = [UIColor redColor];
+//        _contentScrollView.backgroundColor = [UIColor blackColor];
         x = _calculator.yAxisViewWidth;
         height = CGRectGetHeight(self.bounds);
         y = 0;
         width = _calculator.lineGraphWindowWidth;
         frame = CGRectMake(0, y, width, height);
-        _contentScrollView.frame = frame;
+//        _contentScrollView.frame = frame;
         //NSLog(@"_calculator : %f,  state : change", _calculator.drawableAreaWidth, CGRectGetHeight(_contentScrollView.bounds));
 
         _contentScrollView.contentSize = CGSizeMake(_calculator.drawableAreaWidth, CGRectGetHeight(_contentScrollView.bounds));
@@ -255,7 +255,7 @@
         _xAxisView = [[WYLineChartCoordinateXAXisView alloc] init];
         _xAxisView.parentView = self;
         _xAxisView.backgroundColor = [UIColor clearColor];
-        [_contentScrollView addSubview:_xAxisView];
+       // [_contentScrollView addSubview:_xAxisView];
         height = _calculator.xAxisLabelHeight;
         y = CGRectGetHeight(self.bounds) - height;
         x = 0;
@@ -282,7 +282,7 @@
     
     if (!_horizontalReferenceLineGraph) {
         _horizontalReferenceLineGraph = [[WYLineChartHorizontalReferenceLineView alloc] initWithFrame:CGRectZero];
-        _horizontalReferenceLineGraph.backgroundColor = [UIColor clearColor];
+        _horizontalReferenceLineGraph.backgroundColor = [UIColor blackColor];
         _horizontalReferenceLineGraph.parentView = self;
         [self insertSubview:_horizontalReferenceLineGraph belowSubview:_contentScrollView];
         

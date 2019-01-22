@@ -74,8 +74,28 @@ NSString * const kWYLineChartLineAttributeJunctionSize = @"kWYLineChartLineAttri
                                                                                              size:_junctionSize
                                                                                            origin:CGPointZero];
                 shape.center = CGPointMake(point.x, point.y);
-                shape.strokeColor = _junctionColor;
-                shape.fillColor = _junctionColor;
+//                shape.strokeColor = _junctionColor;
+//                shape.fillColor = _junctionColor;
+                if (point.value <= 0 && point.value >= -1) {
+                    shape.strokeColor = [UIColor whiteColor];
+                    shape.fillColor = [UIColor whiteColor];
+                } else if (point.value <= -1 && point.value >= -2) {
+                    shape.strokeColor = [UIColor redColor];
+                    shape.fillColor = [UIColor redColor];
+                } else if (point.value <= -2 && point.value >= -3) {
+                    shape.strokeColor = [UIColor lightGrayColor];
+                    shape.fillColor = [UIColor lightGrayColor];
+                } else if (point.value <= 1 && point.value >= 0) {
+                    shape.strokeColor = [UIColor greenColor];
+                    shape.fillColor = [UIColor greenColor];
+                } else if (point.value <= 2 && point.value >= 1) {
+                    shape.strokeColor = [UIColor yellowColor];
+                    shape.fillColor = [UIColor yellowColor];
+                } else if (point.value <= 3 && point.value >= 2) {
+                    shape.strokeColor = [UIColor whiteColor];
+                    shape.fillColor = [UIColor whiteColor];
+                }
+
                 shape.backgroundColor = [UIColor clearColor];
                 shape.layer.opacity = 0;
                 
@@ -221,7 +241,7 @@ NSString * const kWYLineChartLineAttributeJunctionSize = @"kWYLineChartLineAttri
         // transfer UIColor to CGColor
         NSArray *gradientColors = @[[_lineColor colorWithAlphaComponent:0.6],
                                     [_lineColor colorWithAlphaComponent:0.0]];
-        NSArray *gradientLocation = @[@0, @4.0];
+        NSArray *gradientLocation = @[@0, @1.0];
         NSMutableArray *cgColors = [NSMutableArray arrayWithCapacity:gradientColors];
         [gradientColors enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             CGColorRef cgColor;
@@ -235,7 +255,7 @@ NSString * const kWYLineChartLineAttributeJunctionSize = @"kWYLineChartLineAttri
         
         maskLayer = [CAShapeLayer layer];
         maskLayer.strokeColor = [UIColor clearColor].CGColor;
-        maskLayer.fillColor = [UIColor blackColor].CGColor;
+        maskLayer.fillColor = [UIColor whiteColor].CGColor;
         _gradientMaskLayer = maskLayer;
         
         gradientLayer = [CAGradientLayer layer];
@@ -255,8 +275,8 @@ NSString * const kWYLineChartLineAttributeJunctionSize = @"kWYLineChartLineAttri
             gradientPathLower = [UIBezierPath bezierPathWithCGPath:linePathLower.CGPath];
             gradientPathHigher = [UIBezierPath bezierPathWithCGPath:linePathHigher.CGPath];
             
-            [gradientPath addLineToPoint:CGPointMake(lastPoint.x, boundsHeight)];
-            [gradientPath addLineToPoint:CGPointMake(firstPoint.x, boundsHeight)];
+            [gradientPath addLineToPoint:CGPointMake(lastPoint.x, -boundsHeight)];
+            [gradientPath addLineToPoint:CGPointMake(firstPoint.x, -boundsHeight)];
             [gradientPath addLineToPoint:firstPoint];
             //
             [gradientPathLower addLineToPoint:CGPointMake(lastPoint.x, boundsHeight)];
@@ -624,13 +644,14 @@ NSString * const kWYLineChartLineAttributeJunctionSize = @"kWYLineChartLineAttri
     animation.values = !isReverse ? @[@0.01, @2.5, @1.0] : @[@2.5, @0.01];
     
     CABasicAnimation *baseAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
-    baseAnimation.fromValue = isReverse ? @1.0 : @0.5;
-    baseAnimation.toValue = isReverse ? @0.5 : @1.0;
+    baseAnimation.fromValue = isReverse ? @1.0 : @0.9;
+    baseAnimation.toValue = isReverse ? @0.9 : @1.0;
     
     CAAnimationGroup *groundAnimation = [[CAAnimationGroup alloc] init];
     groundAnimation.duration = 0.5;
     groundAnimation.speed = 0.5;
-    groundAnimation.animations = @[animation, baseAnimation];
+//    groundAnimation.animations = @[animation, baseAnimation];
+    groundAnimation.animations = @[baseAnimation];
     groundAnimation.delegate = self;
     groundAnimation.beginTime = CACurrentMediaTime() + delay;
 //    groundAnimation.timingFunction = DEFAULT_TIMING_FUNCTION;
