@@ -256,7 +256,7 @@
         _xAxisView.parentView = self;
         _xAxisView.backgroundColor = [UIColor clearColor];
         [_contentScrollView addSubview:_xAxisView];
-        height = _calculator.xAxisLabelHeight + 2;
+        height = _calculator.xAxisLabelHeight;
         y = CGRectGetHeight(self.bounds) - height;
         x = 0;
         width = _calculator.drawableAreaWidth;
