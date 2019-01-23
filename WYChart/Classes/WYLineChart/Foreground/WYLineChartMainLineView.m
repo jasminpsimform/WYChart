@@ -363,7 +363,7 @@ NSString * const kWYLineChartLineAttributeJunctionSize = @"kWYLineChartLineAttri
         
         _displayLink.paused = false;
         self.userInteractionEnabled = false;
-        [UIView animateWithDuration:_animationDuration + 0.5
+        [UIView animateWithDuration:_animationDuration + 0.0
                               delay:0.0
              usingSpringWithDamping:0.15
               initialSpringVelocity:1.40

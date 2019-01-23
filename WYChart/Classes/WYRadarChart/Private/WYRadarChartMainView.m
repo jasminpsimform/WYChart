@@ -225,7 +225,7 @@ CAAnimationDelegate
                                                   duration:self.animationDuration];
                 [UIView animateWithDuration:self.animationDuration
                                       delay:0
-                     usingSpringWithDamping:0.5
+                     usingSpringWithDamping:0.0
                       initialSpringVelocity:50
                                     options:0
                                  animations:^{

@@ -17,12 +17,12 @@
 ///////--------------------------------------- Reference Line Default Attribute ------------------------------------------///////
 
 #define DEFAULT_BACKGROUND_COLOR [UIColor colorWithRed:12.f/255.f green:71.f/255.f blue:98.f/255.f alpha:0.9]
-#define DEFAULT_AXIS_COLOR [UIColor whiteColor]
+#define DEFAULT_AXIS_COLOR [UIColor blueColor]
 
 #define DEFAULT_LABEL_COLOR [UIColor whiteColor]
 
 #define DEFAULT_POINTS_LABEL_COLOR [UIColor blackColor]
-#define DEFAULT_POINTS_LABEL_BACKGROUNDCOLOR [UIColor whiteColor]
+#define DEFAULT_POINTS_LABEL_BACKGROUNDCOLOR [UIColor blueColor]
 
 #define DEFAULT_LINE_COLOR [UIColor whiteColor]
 #define DEFAULT_LINE_WIDTH 2.f
@@ -30,12 +30,12 @@
 
 #define DEFAULT_DRAW_GRADIENT YES
 
-#define DEFAULT_VERTICAL_REFERENCELINE_COLOR [UIColor whiteColor]
+#define DEFAULT_VERTICAL_REFERENCELINE_COLOR [UIColor blueColor]
 #define DEFAULT_VERTICAL_REFERENCELINE_WIDTH 1.0
 #define DEFAULT_VERTICAL_REFERENCELINE_ALPHA 0.6
 #define DEFAULT_VERTICAL_REFERENCELINE_DASHPARTTEN nil
 
-#define DEFAULT_HORIZONTAL_REFERENCELINE_COLOR [UIColor whiteColor]
+#define DEFAULT_HORIZONTAL_REFERENCELINE_COLOR [UIColor blueColor]
 #define DEFAULT_HORIZONTAL_REFERENCELINE_WIDTH 1.0
 #define DEFAULT_HORIZONTAL_REFERENCELINE_ALPHA 0.6
 #define DEFAULT_HORIZONTAL_REFERENCELINE_DASHPARTTEN @[@2, @2]
@@ -46,7 +46,7 @@
 #define DEFAULT_AVERAGE_REFERENCELINE_DASHPARTTEN @[@2, @2]
 
 #define DEFAULT_TOUCH_ENABLE YES
-#define DEFAULT_TOUCH_REFERENCELINE_COLOR [UIColor brownColor]
+#define DEFAULT_TOUCH_REFERENCELINE_COLOR [UIColor blueColor]
 #define DEFAULT_TOUCH_REFERENCELINE_WIDTH 1.0
 #define DEFAULT_TOUCH_REFERENCELINE_ALPHA 0.8
 #define DEFAULT_TOUCH_REFERENCELINE_DASHPARTTEN @[@2, @2]
@@ -54,7 +54,7 @@
 #define DEFAULT_SHOW_JUNCTION_SHAPE true
 #define DEFAULT_JUNCTION_COLOR [UIColor whiteColor]
 #define DEFAULT_JUNCTION_POINT_STYLE kWYLineChartJunctionShapeSolidCircle
-#define DEFAULT_JUNCTION_POINT_SIZE kWYLineChartJunctionMiddleShape
+#define DEFAULT_JUNCTION_POINT_SIZE kWYLineChartJunctionLargeShape
 
 #define DEFAULT_TOUCH_POINT_COLOR [UIColor whiteColor]
 #define DEFAULT_TOUCH_POINT_STYLE kWYLineChartJunctionShapeSolidCircle
@@ -63,10 +63,10 @@
 #define DEFAULT_ANIMATION_STYLE kWYLineChartNoneAnimation
 #define DEFAULT_ANIMATION_DUIRATION 0.0
 
-#define DEFAULT_LINE_LEFT_MARGIN 10
-#define DEFAULT_LINE_RIGHT_MARGIN 10
-#define DEFAULT_LINE_TOP_MARGIN 20
-#define DEFAULT_LINE_BOTTOM_MARGIN 50
+#define DEFAULT_LINE_LEFT_MARGIN 0
+#define DEFAULT_LINE_RIGHT_MARGIN 0
+#define DEFAULT_LINE_TOP_MARGIN 0
+#define DEFAULT_LINE_BOTTOM_MARGIN 0
 
 @interface WYLineChartView () <UIScrollViewDelegate,
                                WYLineChartMainLineViewDelegate>
@@ -222,7 +222,8 @@
         height = CGRectGetHeight(self.bounds);
         y = 0;
         width = _calculator.lineGraphWindowWidth;
-        frame = CGRectMake(x, y, width, height);
+//        frame = CGRectMake(x, y, width, height);
+        frame = CGRectMake(0, y, width, height);
         _contentScrollView.frame = frame;
         //NSLog(@"_calculator : %f,  state : change", _calculator.drawableAreaWidth, CGRectGetHeight(_contentScrollView.bounds));
 
@@ -398,9 +399,9 @@
         [_pinchView addSubview:_labelsView];
     }
     
-    _labelsView.frame = frame;
+    // _labelsView.frame = frame;
     [_pinchView bringSubviewToFront:_labelsView];
-    [_labelsView setNeedsDisplay];
+    // [_labelsView setNeedsDisplay];
 }
 
 #pragma mark - setup and handle pinch gesture
@@ -483,7 +484,7 @@
     CGAffineTransform transform = CGAffineTransformIdentity;
     transform = CGAffineTransformScale(transform, 1.0, 1.0);
     
-    [UIView animateWithDuration:0.4
+    [UIView animateWithDuration:0.0
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseOut
                      animations:^{

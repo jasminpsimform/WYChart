@@ -1,0 +1,465 @@
+From 1c64676529c1c84e1970bbf2af9ce28d0b2844c5 Mon Sep 17 00:00:00 2001
+From: Viraj Patel <viraj.p@simformsolutions.com>
+Date: Wed, 16 Jan 2019 17:46:10 +0530
+Subject: [PATCH] - Fix issue - Set Min - MAX value For Chart - Fix issue -
+ Changing X value for one tap to pan
+
+---
+ Example/Pods/Pods.xcodeproj/project.pbxproj   | 26 +++++++++++-
+ .../xcshareddata/xcschemes/WYChart.xcscheme   | 39 +++++++++++-------
+ Example/WYChart.xcodeproj/project.pbxproj     | 35 +++++++++++++---
+ .../xcschemes/WYChart-Example.xcscheme        |  2 +-
+ .../Foreground/WYLineChartMainLineView.m      |  4 +-
+ .../WYLineChart/Main/WYLineChartCalculator.m  | 41 +++++++++++--------
+ .../WYLineChart/Main/WYLineChartView.h        |  4 +-
+ .../WYLineChart/Main/WYLineChartView.m        | 31 +++++++++-----
+ 8 files changed, 131 insertions(+), 51 deletions(-)
+
+diff --git a/Example/Pods/Pods.xcodeproj/project.pbxproj b/Example/Pods/Pods.xcodeproj/project.pbxproj
+index fe8a5c7..0e6729f 100644
+--- a/Example/Pods/Pods.xcodeproj/project.pbxproj
++++ b/Example/Pods/Pods.xcodeproj/project.pbxproj
+@@ -575,7 +575,7 @@
+ 			isa = PBXProject;
+ 			attributes = {
+ 				LastSwiftUpdateCheck = 0730;
+-				LastUpgradeCheck = 0700;
++				LastUpgradeCheck = 0940;
+ 			};
+ 			buildConfigurationList = 2D8E8EC45A3A1A1D94AE762CB5028504 /* Build configuration list for PBXProject "Pods" */;
+ 			compatibilityVersion = "Xcode 3.2";
+@@ -667,20 +667,32 @@
+ 				CLANG_CXX_LIBRARY = "libc++";
+ 				CLANG_ENABLE_MODULES = YES;
+ 				CLANG_ENABLE_OBJC_ARC = YES;
++				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+ 				CLANG_WARN_BOOL_CONVERSION = YES;
++				CLANG_WARN_COMMA = YES;
+ 				CLANG_WARN_CONSTANT_CONVERSION = YES;
++				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+ 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES;
+ 				CLANG_WARN_EMPTY_BODY = YES;
+ 				CLANG_WARN_ENUM_CONVERSION = YES;
++				CLANG_WARN_INFINITE_RECURSION = YES;
+ 				CLANG_WARN_INT_CONVERSION = YES;
++				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
++				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
++				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+ 				CLANG_WARN_OBJC_ROOT_CLASS = YES;
++				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
++				CLANG_WARN_STRICT_PROTOTYPES = YES;
++				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+ 				CLANG_WARN_UNREACHABLE_CODE = YES;
+ 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+ 				CODE_SIGNING_REQUIRED = NO;
+ 				COPY_PHASE_STRIP = NO;
++				ENABLE_STRICT_OBJC_MSGSEND = YES;
+ 				ENABLE_TESTABILITY = YES;
+ 				GCC_C_LANGUAGE_STANDARD = gnu99;
+ 				GCC_DYNAMIC_NO_PIC = NO;
++				GCC_NO_COMMON_BLOCKS = YES;
+ 				GCC_OPTIMIZATION_LEVEL = 0;
+ 				GCC_PREPROCESSOR_DEFINITIONS = (
+ 					"POD_CONFIGURATION_DEBUG=1",
+@@ -781,19 +793,31 @@
+ 				CLANG_CXX_LIBRARY = "libc++";
+ 				CLANG_ENABLE_MODULES = YES;
+ 				CLANG_ENABLE_OBJC_ARC = YES;
++				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+ 				CLANG_WARN_BOOL_CONVERSION = YES;
++				CLANG_WARN_COMMA = YES;
+ 				CLANG_WARN_CONSTANT_CONVERSION = YES;
++				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+ 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES;
+ 				CLANG_WARN_EMPTY_BODY = YES;
+ 				CLANG_WARN_ENUM_CONVERSION = YES;
++				CLANG_WARN_INFINITE_RECURSION = YES;
+ 				CLANG_WARN_INT_CONVERSION = YES;
++				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
++				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
++				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+ 				CLANG_WARN_OBJC_ROOT_CLASS = YES;
++				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
++				CLANG_WARN_STRICT_PROTOTYPES = YES;
++				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+ 				CLANG_WARN_UNREACHABLE_CODE = YES;
+ 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+ 				CODE_SIGNING_REQUIRED = NO;
+ 				COPY_PHASE_STRIP = YES;
+ 				ENABLE_NS_ASSERTIONS = NO;
++				ENABLE_STRICT_OBJC_MSGSEND = YES;
+ 				GCC_C_LANGUAGE_STANDARD = gnu99;
++				GCC_NO_COMMON_BLOCKS = YES;
+ 				GCC_PREPROCESSOR_DEFINITIONS = (
+ 					"POD_CONFIGURATION_RELEASE=1",
+ 					"$(inherited)",
+diff --git a/Example/Pods/Pods.xcodeproj/xcshareddata/xcschemes/WYChart.xcscheme b/Example/Pods/Pods.xcodeproj/xcshareddata/xcschemes/WYChart.xcscheme
+index 8f6da54..6bd96b2 100644
+--- a/Example/Pods/Pods.xcodeproj/xcshareddata/xcschemes/WYChart.xcscheme
++++ b/Example/Pods/Pods.xcodeproj/xcshareddata/xcschemes/WYChart.xcscheme
+@@ -1,36 +1,39 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <Scheme
+-   LastUpgradeVersion = "0700"
++   LastUpgradeVersion = "0940"
+    version = "1.3">
+    <BuildAction
+       parallelizeBuildables = "YES"
+       buildImplicitDependencies = "YES">
+       <BuildActionEntries>
+          <BuildActionEntry
+-            buildForAnalyzing = "YES"
+             buildForTesting = "YES"
+             buildForRunning = "YES"
+             buildForProfiling = "YES"
+-            buildForArchiving = "YES">
++            buildForArchiving = "YES"
++            buildForAnalyzing = "YES">
+             <BuildableReference
+-               BuildableIdentifier = 'primary'
+-               BlueprintIdentifier = '81974F0442183E1C9EFC7D68A731F283'
+-               BlueprintName = 'WYChart'
+-               ReferencedContainer = 'container:Pods.xcodeproj'
+-               BuildableName = 'WYChart.framework'>
++               BuildableIdentifier = "primary"
++               BlueprintIdentifier = "81974F0442183E1C9EFC7D68A731F283"
++               BuildableName = "WYChart.framework"
++               BlueprintName = "WYChart"
++               ReferencedContainer = "container:Pods.xcodeproj">
+             </BuildableReference>
+          </BuildActionEntry>
+       </BuildActionEntries>
+    </BuildAction>
+    <TestAction
++      buildConfiguration = "Debug"
+       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+-      shouldUseLaunchSchemeArgsEnv = "YES"
+-      buildConfiguration = "Debug">
++      shouldUseLaunchSchemeArgsEnv = "YES">
++      <Testables>
++      </Testables>
+       <AdditionalOptions>
+       </AdditionalOptions>
+    </TestAction>
+    <LaunchAction
++      buildConfiguration = "Debug"
+       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+       launchStyle = "0"
+@@ -38,17 +41,25 @@
+       ignoresPersistentStateOnLaunch = "NO"
+       debugDocumentVersioning = "YES"
+       debugServiceExtension = "internal"
+-      buildConfiguration = "Debug"
+       allowLocationSimulation = "YES">
++      <MacroExpansion>
++         <BuildableReference
++            BuildableIdentifier = "primary"
++            BlueprintIdentifier = "81974F0442183E1C9EFC7D68A731F283"
++            BuildableName = "WYChart.framework"
++            BlueprintName = "WYChart"
++            ReferencedContainer = "container:Pods.xcodeproj">
++         </BuildableReference>
++      </MacroExpansion>
+       <AdditionalOptions>
+       </AdditionalOptions>
+    </LaunchAction>
+    <ProfileAction
++      buildConfiguration = "Release"
++      shouldUseLaunchSchemeArgsEnv = "YES"
+       savedToolIdentifier = ""
+       useCustomWorkingDirectory = "NO"
+-      debugDocumentVersioning = "YES"
+-      buildConfiguration = "Release"
+-      shouldUseLaunchSchemeArgsEnv = "YES">
++      debugDocumentVersioning = "YES">
+    </ProfileAction>
+    <AnalyzeAction
+       buildConfiguration = "Debug">
+diff --git a/Example/WYChart.xcodeproj/project.pbxproj b/Example/WYChart.xcodeproj/project.pbxproj
+index 45b430b..72f3835 100644
+--- a/Example/WYChart.xcodeproj/project.pbxproj
++++ b/Example/WYChart.xcodeproj/project.pbxproj
+@@ -269,12 +269,9 @@
+ 			isa = PBXProject;
+ 			attributes = {
+ 				CLASSPREFIX = WYC;
+-				LastUpgradeCheck = 0720;
++				LastUpgradeCheck = 0940;
+ 				ORGANIZATIONNAME = FreedomKing;
+ 				TargetAttributes = {
+-					6003F589195388D20070C39A = {
+-						DevelopmentTeam = P3G84VNT6D;
+-					};
+ 					6003F5AD195388D20070C39A = {
+ 						TestTargetID = 6003F589195388D20070C39A;
+ 					};
+@@ -475,19 +472,32 @@
+ 				CLANG_CXX_LIBRARY = "libc++";
+ 				CLANG_ENABLE_MODULES = YES;
+ 				CLANG_ENABLE_OBJC_ARC = YES;
++				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+ 				CLANG_WARN_BOOL_CONVERSION = YES;
++				CLANG_WARN_COMMA = YES;
+ 				CLANG_WARN_CONSTANT_CONVERSION = YES;
++				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+ 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+ 				CLANG_WARN_EMPTY_BODY = YES;
+ 				CLANG_WARN_ENUM_CONVERSION = YES;
++				CLANG_WARN_INFINITE_RECURSION = YES;
+ 				CLANG_WARN_INT_CONVERSION = YES;
++				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
++				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
++				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+ 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
++				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
++				CLANG_WARN_STRICT_PROTOTYPES = YES;
++				CLANG_WARN_SUSPICIOUS_MOVE = YES;
++				CLANG_WARN_UNREACHABLE_CODE = YES;
+ 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+ 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+ 				COPY_PHASE_STRIP = NO;
++				ENABLE_STRICT_OBJC_MSGSEND = YES;
+ 				ENABLE_TESTABILITY = YES;
+ 				GCC_C_LANGUAGE_STANDARD = gnu99;
+ 				GCC_DYNAMIC_NO_PIC = NO;
++				GCC_NO_COMMON_BLOCKS = YES;
+ 				GCC_OPTIMIZATION_LEVEL = 0;
+ 				GCC_PREPROCESSOR_DEFINITIONS = (
+ 					"DEBUG=1",
+@@ -515,18 +525,31 @@
+ 				CLANG_CXX_LIBRARY = "libc++";
+ 				CLANG_ENABLE_MODULES = YES;
+ 				CLANG_ENABLE_OBJC_ARC = YES;
++				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+ 				CLANG_WARN_BOOL_CONVERSION = YES;
++				CLANG_WARN_COMMA = YES;
+ 				CLANG_WARN_CONSTANT_CONVERSION = YES;
++				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+ 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+ 				CLANG_WARN_EMPTY_BODY = YES;
+ 				CLANG_WARN_ENUM_CONVERSION = YES;
++				CLANG_WARN_INFINITE_RECURSION = YES;
+ 				CLANG_WARN_INT_CONVERSION = YES;
++				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
++				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
++				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+ 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
++				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
++				CLANG_WARN_STRICT_PROTOTYPES = YES;
++				CLANG_WARN_SUSPICIOUS_MOVE = YES;
++				CLANG_WARN_UNREACHABLE_CODE = YES;
+ 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+ 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+ 				COPY_PHASE_STRIP = YES;
+ 				ENABLE_NS_ASSERTIONS = NO;
++				ENABLE_STRICT_OBJC_MSGSEND = YES;
+ 				GCC_C_LANGUAGE_STANDARD = gnu99;
++				GCC_NO_COMMON_BLOCKS = YES;
+ 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+ 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+ 				GCC_WARN_UNDECLARED_SELECTOR = YES;
+@@ -545,7 +568,7 @@
+ 			baseConfigurationReference = 053961723120B2A648865F07 /* Pods-WYChart_Example.debug.xcconfig */;
+ 			buildSettings = {
+ 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+-				DEVELOPMENT_TEAM = P3G84VNT6D;
++				DEVELOPMENT_TEAM = "";
+ 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+ 				GCC_PREFIX_HEADER = "WYChart/WYChart-Prefix.pch";
+ 				INFOPLIST_FILE = "WYChart/WYChart-Info.plist";
+@@ -562,7 +585,7 @@
+ 			baseConfigurationReference = DBCC2709E9947E6314F19645 /* Pods-WYChart_Example.release.xcconfig */;
+ 			buildSettings = {
+ 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+-				DEVELOPMENT_TEAM = P3G84VNT6D;
++				DEVELOPMENT_TEAM = "";
+ 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+ 				GCC_PREFIX_HEADER = "WYChart/WYChart-Prefix.pch";
+ 				INFOPLIST_FILE = "WYChart/WYChart-Info.plist";
+diff --git a/Example/WYChart.xcodeproj/xcshareddata/xcschemes/WYChart-Example.xcscheme b/Example/WYChart.xcodeproj/xcshareddata/xcschemes/WYChart-Example.xcscheme
+index f6935ce..e8b9553 100644
+--- a/Example/WYChart.xcodeproj/xcshareddata/xcschemes/WYChart-Example.xcscheme
++++ b/Example/WYChart.xcodeproj/xcshareddata/xcschemes/WYChart-Example.xcscheme
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <Scheme
+-   LastUpgradeVersion = "0720"
++   LastUpgradeVersion = "0940"
+    version = "1.3">
+    <BuildAction
+       parallelizeBuildables = "YES"
+diff --git a/WYChart/Classes/WYLineChart/Foreground/WYLineChartMainLineView.m b/WYChart/Classes/WYLineChart/Foreground/WYLineChartMainLineView.m
+index a500202..c85a210 100755
+--- a/WYChart/Classes/WYLineChart/Foreground/WYLineChartMainLineView.m
++++ b/WYChart/Classes/WYLineChart/Foreground/WYLineChartMainLineView.m
+@@ -563,7 +563,7 @@ NSString * const kWYLineChartLineAttributeJunctionSize = @"kWYLineChartLineAttri
+             NSLog(@"gesture end with state : %lu", recognize.state);
+             
+ //            [self addScaleSpringAnimationForView:_movingPoint reverse:true delay:0 forKeyPath:@"moving"];
+-//            selector = @selector(mainLineView:didEndedTouchAtPoint:belongToSegmentOfPoint:);
++            selector = @selector(mainLineView:didEndedTouchAtPoint:belongToSegmentOfPoint:);
+ //
+ //            [UIView animateWithDuration:0.8 animations:^{
+ //                _touchView.alpha = 0.0;
+@@ -574,7 +574,7 @@ NSString * const kWYLineChartLineAttributeJunctionSize = @"kWYLineChartLineAttri
+ 
+ //            _movingPoint.hidden = false;
+ //            [self addScaleSpringAnimationForView:_movingPoint reverse:false delay:0 forKeyPath:@"moving"];
+-//            selector = @selector(mainLineView:didBeganTouchAtPoint:belongToSegmentOfPoint:);
++            selector = @selector(mainLineView:didBeganTouchAtPoint:belongToSegmentOfPoint:);
+ //
+ //            [UIView animateWithDuration:0.5 animations:^{
+ //                _touchView.alpha = 1.0;
+diff --git a/WYChart/Classes/WYLineChart/Main/WYLineChartCalculator.m b/WYChart/Classes/WYLineChart/Main/WYLineChartCalculator.m
+index a652781..cc76f68 100755
+--- a/WYChart/Classes/WYLineChart/Main/WYLineChartCalculator.m
++++ b/WYChart/Classes/WYLineChart/Main/WYLineChartCalculator.m
+@@ -122,14 +122,18 @@
+ - (CGFloat)yLocationForPointsValue:(CGFloat)value {
+     
+     CGFloat y;
+-    CGFloat maxValue = [[self filterPointsOfLinesPointSet:_parentView.points
+-                                         comparatorBlock:^BOOL(WYLineChartPoint *firstPoint, WYLineChartPoint *secondPoint) {
+-                                             return firstPoint.value > secondPoint.value;
+-                                         }] value];
+-    CGFloat minValue = [[self filterPointsOfLinesPointSet:_parentView.points
+-                                          comparatorBlock:^BOOL(WYLineChartPoint *firstPoint, WYLineChartPoint *secondPoint) {
+-                                              return firstPoint.value < secondPoint.value;
+-                                          }] value];
++//    CGFloat maxValue = [[self filterPointsOfLinesPointSet:_parentView.points
++//                                         comparatorBlock:^BOOL(WYLineChartPoint *firstPoint, WYLineChartPoint *secondPoint) {
++//                                             return firstPoint.value > secondPoint.value;
++//                                         }] value];
++//    CGFloat minValue = [[self filterPointsOfLinesPointSet:_parentView.points
++//                                          comparatorBlock:^BOOL(WYLineChartPoint *firstPoint, WYLineChartPoint *secondPoint) {
++//                                              return firstPoint.value < secondPoint.value;
++//                                          }] value];
++    
++    CGFloat maxValue = _parentView.maxValue;
++    CGFloat minValue = _parentView.minValue;
++    
+     CGFloat differ = maxValue - minValue;
+     CGFloat pixels = self.drawableAreaHeight - (_parentView.lineTopMargin) - _parentView.lineBottomMargin;
+     
+@@ -378,6 +382,7 @@
+     }
+     
+     CGFloat average = (CGFloat)sum / count;
++    // return average;
+     return 0;
+ }
+ 
+@@ -388,14 +393,18 @@
+ - (CGFloat)valueReferToVerticalLocation:(CGFloat)location {
+     
+     CGFloat value;
+-    CGFloat maxValue = [[self filterPointsOfLinesPointSet:_parentView.points
+-                                          comparatorBlock:^BOOL(WYLineChartPoint *firstPoint, WYLineChartPoint *secondPoint) {
+-                                              return firstPoint.value > secondPoint.value;
+-                                          }] value];
+-    CGFloat minValue = [[self filterPointsOfLinesPointSet:_parentView.points
+-                                          comparatorBlock:^BOOL(WYLineChartPoint *firstPoint, WYLineChartPoint *secondPoint) {
+-                                              return firstPoint.value < secondPoint.value;
+-                                          }] value];
++//    CGFloat maxValue = [[self filterPointsOfLinesPointSet:_parentView.points
++//                                          comparatorBlock:^BOOL(WYLineChartPoint *firstPoint, WYLineChartPoint *secondPoint) {
++//                                              return firstPoint.value > secondPoint.value;
++//                                          }] value];
++//    CGFloat minValue = [[self filterPointsOfLinesPointSet:_parentView.points
++//                                          comparatorBlock:^BOOL(WYLineChartPoint *firstPoint, WYLineChartPoint *secondPoint) {
++//                                              return firstPoint.value < secondPoint.value;
++//                                          }] value];
++    
++    CGFloat maxValue = _parentView.maxValue;
++    CGFloat minValue = _parentView.minValue;
++    
+     CGFloat differ = maxValue - minValue;
+     CGFloat pixels = self.drawableAreaHeight - (_parentView.lineTopMargin) - _parentView.lineBottomMargin;
+     
+diff --git a/WYChart/Classes/WYLineChart/Main/WYLineChartView.h b/WYChart/Classes/WYLineChart/Main/WYLineChartView.h
+index e839583..c57e06a 100755
+--- a/WYChart/Classes/WYLineChart/Main/WYLineChartView.h
++++ b/WYChart/Classes/WYLineChart/Main/WYLineChartView.h
+@@ -30,11 +30,13 @@
+ //              ]
+ // v0.2.0
+ @property (nonatomic, strong) NSArray *points;
++@property (nonatomic) CGFloat firstX;
+ 
+ // define if the line graph can scroll
+ // default YES.
+ @property (nonatomic) BOOL scrollable;
+-
++@property (nonatomic) CGFloat maxValue;
++@property (nonatomic) CGFloat minValue;
+ //default NO
+ @property (nonatomic) BOOL pinchable;
+ 
+diff --git a/WYChart/Classes/WYLineChart/Main/WYLineChartView.m b/WYChart/Classes/WYLineChart/Main/WYLineChartView.m
+index c9f3bb7..8d4de21 100755
+--- a/WYChart/Classes/WYLineChart/Main/WYLineChartView.m
++++ b/WYChart/Classes/WYLineChart/Main/WYLineChartView.m
+@@ -144,8 +144,9 @@
+     //* * * * * * * * * * * * * * * * * * * *//
+     //                  Value                //
+     //* * * * * * * * * * * * * * * * * * * *//
+-    _scrollable = YES;
+-    
++    _scrollable = NO;
++    _maxValue = 3;
++    _minValue = -3;
+     //* * * * * * * * * * * * * * * * * * * *//
+     //                  Rect                 //
+     //* * * * * * * * * * * * * * * * * * * *//
+@@ -531,8 +532,9 @@
+ 
+ - (void)mainLineView:(WYLineChartMainLineView *)lineView didBeganTouchAtPoint:(CGPoint)point belongToSegmentOfPoint:(WYLineChartPoint *)originalPoint {
+ //    NSLog(@"touch point : %li", (long)originalPoint.index);
+-    [_horizontalReferenceLineGraph moveReferenceLineToPoint:point];
+-    [_verticalReferenceLineGraph moveReferenceLineToPoint:point];
++    _firstX = 0.0;
++//    [_horizontalReferenceLineGraph moveReferenceLineToPoint:point];
++//    [_verticalReferenceLineGraph moveReferenceLineToPoint:point];
+     if ([_delegate respondsToSelector:@selector(lineChartView:didBeganTouchAtSegmentOfPoint:value:)]) {
+         [_delegate lineChartView:self didBeganTouchAtSegmentOfPoint:originalPoint value:[_calculator valueReferToVerticalLocation:point.y]];
+     }
+@@ -540,19 +542,28 @@
+ 
+ - (void)mainLineView:(WYLineChartMainLineView *)lineView didmovedTouchToPoint:(CGPoint)point belongToSegmentOfPoint:(WYLineChartPoint *)originalPoint {
+     
+-    [_horizontalReferenceLineGraph moveReferenceLineToPoint:point];
+-    [_verticalReferenceLineGraph moveReferenceLineToPoint:point];
++//    [_horizontalReferenceLineGraph moveReferenceLineToPoint:point];
++//    [_verticalReferenceLineGraph moveReferenceLineToPoint:point];
+     NSLog(@"New Pont X %f", point.x);
+     NSLog(@"New Pont Y %f", point.y);
+-    if ([_delegate respondsToSelector:@selector(lineChartView:didMovedTouchToSegmentOfPoint:value:)]) {
+-        [_delegate lineChartView:self didMovedTouchToSegmentOfPoint:originalPoint value:[_calculator valueReferToVerticalLocation:point.y]];
++    if (_firstX == 0.0) {
++        _firstX = point.x;
++    }
++    
++    if ((_firstX <= point.x + 10) && (_firstX >= point.x - 10)) {
++        NSLog(@"valueReferToVerticalLocation x %f", [_calculator verticalLocationForValue:point.x]);
++        
++        if ([_delegate respondsToSelector:@selector(lineChartView:didMovedTouchToSegmentOfPoint:value:)]) {
++            [_delegate lineChartView:self didMovedTouchToSegmentOfPoint:originalPoint value:[_calculator valueReferToVerticalLocation:point.y]];
++        }
+     }
+ }
+ 
+ - (void)mainLineView:(WYLineChartMainLineView *)lineView didEndedTouchAtPoint:(CGPoint)point belongToSegmentOfPoint:(WYLineChartPoint *)originalPoint {
+ //    NSLog(@"touch point : %li", (long)originalPoint.index);
+-    [_horizontalReferenceLineGraph dismissReferenceLine];
+-    [_verticalReferenceLineGraph dismissReferenceLine];
++    _firstX = 0.0;
++//    [_horizontalReferenceLineGraph dismissReferenceLine];
++//    [_verticalReferenceLineGraph dismissReferenceLine];
+     if ([_delegate respondsToSelector:@selector(lineChartView:didEndedTouchToSegmentOfPoint:value:)]) {
+         [_delegate lineChartView:self didEndedTouchToSegmentOfPoint:originalPoint value:[_calculator valueReferToVerticalLocation:point.y]];
+     }
+-- 
+2.18.0
+

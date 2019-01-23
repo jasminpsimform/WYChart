@@ -79,6 +79,8 @@
 
 - (CGFloat)yAxisLabelWidth {
     
+    return 0.f;
+    
     CGFloat maxValueOfPoints = [[self maxValuePointsOfLinesPointSet:_parentView.points] value];
     NSString *valueString = [NSString stringWithFormat:@"%.0f", maxValueOfPoints];
     
