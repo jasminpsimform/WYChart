@@ -78,23 +78,23 @@ NSString * const kWYLineChartLineAttributeJunctionSize = @"kWYLineChartLineAttri
 //                shape.fillColor = _junctionColor;
 
                 if (point.value <= 0 && point.value >= -1) {
-                    shape.strokeColor = [UIColor whiteColor];
-                    shape.fillColor = [UIColor whiteColor];
+                    shape.strokeColor = [UIColor orangeColor];
+                    shape.fillColor = [UIColor orangeColor];
                 } else if (point.value <= -1 && point.value >= -2) {
                     shape.strokeColor = [UIColor redColor];
                     shape.fillColor = [UIColor redColor];
                 } else if (point.value <= -2 && point.value >= -3) {
-                    shape.strokeColor = [UIColor lightGrayColor];
-                    shape.fillColor = [UIColor lightGrayColor];
+                    shape.strokeColor = [UIColor redColor];
+                    shape.fillColor = [UIColor redColor];
                 } else if (point.value <= 1 && point.value >= 0) {
-                    shape.strokeColor = [UIColor greenColor];
-                    shape.fillColor = [UIColor greenColor];
-                } else if (point.value <= 2 && point.value >= 1) {
                     shape.strokeColor = [UIColor yellowColor];
                     shape.fillColor = [UIColor yellowColor];
+                } else if (point.value <= 2 && point.value >= 1) {
+                    shape.strokeColor = [UIColor greenColor];
+                    shape.fillColor = [UIColor greenColor];
                 } else if (point.value <= 3 && point.value >= 2) {
-                    shape.strokeColor = [UIColor whiteColor];
-                    shape.fillColor = [UIColor whiteColor];
+                    shape.strokeColor = [UIColor greenColor];
+                    shape.fillColor = [UIColor greenColor];
                 }
                 shape.backgroundColor = [UIColor clearColor];
                 shape.layer.opacity = 0;
